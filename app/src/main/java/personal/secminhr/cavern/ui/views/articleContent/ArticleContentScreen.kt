@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.viewinterop.viewModel
 import com.bumptech.glide.Glide
-import personal.secminhr.cavern.ArticleContentViewModel
+import personal.secminhr.cavern.viewmodel.ArticleContentViewModel
 import personal.secminhr.cavern.MainActivity
 import personal.secminhr.cavern.ui.views.Screen
 import personal.secminhr.cavern.ui.views.ScreenStack

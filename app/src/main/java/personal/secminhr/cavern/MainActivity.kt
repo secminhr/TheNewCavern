@@ -11,6 +11,8 @@ import personal.secminhr.cavern.ui.views.MainActivityView
 import personal.secminhr.cavern.ui.views.ScreenStack
 import personal.secminhr.cavern.ui.views.articleContent.ArticleContentScreen
 import personal.secminhr.cavern.ui.views.articles.ArticleScreen
+import personal.secminhr.cavern.viewmodel.ArticlesListViewModel
+import personal.secminhr.cavern.viewmodel.SessionUserViewModel
 import stoneapp.secminhr.cavern.api.Cavern
 import stoneapp.secminhr.cavern.cavernError.SessionExpiredError
 import stoneapp.secminhr.cavern.cavernObject.Account

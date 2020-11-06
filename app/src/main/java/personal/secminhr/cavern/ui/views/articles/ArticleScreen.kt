@@ -14,20 +14,18 @@ import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.bumptech.glide.Glide
-import personal.secminhr.cavern.ArticlesListViewModel
 import personal.secminhr.cavern.MainActivity
 import personal.secminhr.cavern.ui.views.Screen
 import personal.secminhr.cavern.ui.views.ScreenStack
 import personal.secminhr.cavern.ui.views.login.LoginScreen
+import personal.secminhr.cavern.viewmodel.ArticlesListViewModel
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 
 class ArticleScreen(viewModel: ArticlesListViewModel,
                     navigate: (ArticlePreview) -> Unit = {}): Screen {
 
-    private var articles = viewModel.getArticlesPreview()
-
     override val content = @Composable {
-        ArticleList(list = articles, onItemClicked = navigate)
+        ArticleList(list = viewModel.getArticlesPreview(), onItemClicked = navigate)
     }
 
     override val topBarIcon = @Composable {

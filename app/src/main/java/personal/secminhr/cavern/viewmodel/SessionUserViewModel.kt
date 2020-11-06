@@ -1,4 +1,4 @@
-package personal.secminhr.cavern
+package personal.secminhr.cavern.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

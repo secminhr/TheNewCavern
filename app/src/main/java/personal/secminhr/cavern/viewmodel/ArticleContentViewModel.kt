@@ -1,4 +1,4 @@
-package personal.secminhr.cavern
+package personal.secminhr.cavern.viewmodel
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State

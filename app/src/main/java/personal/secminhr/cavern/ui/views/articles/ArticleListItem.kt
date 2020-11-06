@@ -11,9 +11,6 @@ import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material.ripple.RippleIndication
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -58,23 +55,21 @@ fun LikeData(preview: ArticlePreview,
              modifier: Modifier,
              onLikeClicked: (Int) -> Unit = {}) {
 
-    var liked by state { preview.liked }
-    var likeCount by state { preview.upvote.get() }
     Row(modifier = modifier + Modifier.padding(end = 16.dp)) {
         IconToggleButton(
                 modifier = Modifier.width(48.dp).align(Alignment.CenterVertically),
-                checked = liked,
+                checked = preview.liked,
                 onCheckedChange = {
                     onLikeClicked(preview.id)
                 }
         ) {
-            if (liked) {
+            if (preview.liked) {
                 Icon(Icons.Filled.ThumbUp)
             } else {
                 Icon(Icons.Outlined.ThumbUp)
             }
         }
-        Text(likeCount.toString(),
+        Text(preview.upvote.get().toString(),
                 color = Color.Gray,
                 fontSize = 16.sp,
                 modifier = Modifier.align(Alignment.CenterVertically))

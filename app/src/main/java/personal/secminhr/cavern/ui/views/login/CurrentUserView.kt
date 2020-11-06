@@ -16,7 +16,7 @@ import androidx.compose.ui.viewinterop.viewModel
 import com.bumptech.glide.Glide
 import personal.secminhr.cavern.MainActivity
 import personal.secminhr.cavern.R
-import personal.secminhr.cavern.LogoutViewModel
+import personal.secminhr.cavern.viewmodel.LogoutViewModel
 import stoneapp.secminhr.cavern.cavernObject.Account
 
 @Composable
