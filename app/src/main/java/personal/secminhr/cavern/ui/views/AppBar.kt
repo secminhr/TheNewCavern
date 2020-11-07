@@ -24,7 +24,7 @@ import androidx.ui.tooling.preview.Preview
 import personal.secminhr.cavern.R
 
 @Composable
-fun AppBar(icon: @Composable() () -> Unit = DefaultIcon,
+fun AppBar(icon: @Composable () -> Unit,
            showBackButton: Boolean = false,
            backAction: () -> Unit = {},
            iconAction: () -> Unit = {}) {
@@ -56,7 +56,7 @@ val DefaultIcon = @Composable {
 @Preview(showBackground = true, name = "Not login")
 @Composable
 fun NoLoginBar() {
-    AppBar()
+    AppBar(DefaultIcon)
 }
 
 @Preview(showBackground = true, name = "logged in")

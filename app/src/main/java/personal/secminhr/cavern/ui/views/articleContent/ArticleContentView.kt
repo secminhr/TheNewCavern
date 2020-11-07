@@ -25,7 +25,7 @@ fun ArticleContentView(article: State<Article>) {
         ArticleInfo(article.value)
 
         if (article.value.content == "") {
-            CircularProgressIndicator()
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp))
         } else {
             MarkdownView(text = article.value.content)
         }

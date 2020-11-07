@@ -9,13 +9,11 @@ import personal.secminhr.cavern.ui.style.CavernTheme
 import personal.secminhr.cavern.viewmodel.ArticlesListViewModel
 
 @Composable
-fun MainActivityView(screen: Screen, addBackButton: Boolean = false, backAction: () -> Unit = {}, history: ScreenStack) {
+fun MainActivityView(screen: Screen) {
     viewModel<ArticlesListViewModel>().listState = rememberLazyListState()
 
     CavernTheme {
         Column {
-            AppBar(icon = screen.topBarIcon, showBackButton = addBackButton,
-                   backAction = backAction, iconAction = { screen.topBarIconAction(history) })
             Crossfade(current = screen) {
                 it.content()
             }

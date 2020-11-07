@@ -4,13 +4,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import java.util.*
 
-class ScreenStack(initScreen: Screen) {
+class ScreenStack() {
     private val history = Stack<Screen>()
-    val currentScreen: MutableState<Screen> = mutableStateOf(initScreen)
-
-    init {
-        history.push(initScreen)
-    }
+    val currentScreen: MutableState<Screen?> = mutableStateOf(null)
 
     fun changeScreen(screen: Screen) {
         history.push(screen)

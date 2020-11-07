@@ -16,18 +16,17 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.viewinterop.viewModel
 import com.bumptech.glide.Glide
 import personal.secminhr.cavern.MainActivity
+import personal.secminhr.cavern.MainActivity.Companion.articleContentScreen
+import personal.secminhr.cavern.MainActivity.Companion.loginScreen
 import personal.secminhr.cavern.ui.views.Screen
-import personal.secminhr.cavern.ui.views.ScreenStack
-import personal.secminhr.cavern.ui.views.login.LoginScreen
 import personal.secminhr.cavern.viewmodel.ArticlesListViewModel
-import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 
-class ArticleScreen(navigate: (ArticlePreview) -> Unit = {}): Screen {
+class ArticleScreen: Screen {
 
     override val content = @Composable {
         ArticleList(list = viewModel<ArticlesListViewModel>().getArticlesPreview(),
                 state = viewModel<ArticlesListViewModel>().listState!!,
-                onItemClicked = navigate
+                onItemClicked = { navigateTo(articleContentScreen(it)) }
         )
     }
 
@@ -45,7 +44,8 @@ class ArticleScreen(navigate: (ArticlePreview) -> Unit = {}): Screen {
             Icon(Icons.Default.AccountCircle)
         }
     }
-    override val topBarIconAction: (ScreenStack) -> Unit = {
-        it.changeScreen(LoginScreen())
+    override val topBarIconAction = {
+        navigateTo(loginScreen)
     }
+    override val shouldShowBackButton = false
 }

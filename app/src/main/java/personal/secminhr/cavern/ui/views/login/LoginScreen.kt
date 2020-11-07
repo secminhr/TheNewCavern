@@ -7,10 +7,9 @@ import androidx.compose.material.icons.filled.Article
 import androidx.compose.runtime.*
 import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.viewinterop.viewModel
-import personal.secminhr.cavern.viewmodel.LoginViewModel
 import personal.secminhr.cavern.MainActivity
 import personal.secminhr.cavern.ui.views.Screen
-import personal.secminhr.cavern.ui.views.ScreenStack
+import personal.secminhr.cavern.viewmodel.LoginViewModel
 
 class LoginScreen: Screen {
 
@@ -41,7 +40,8 @@ class LoginScreen: Screen {
     override val topBarIcon = @Composable {
         Icon(Icons.Default.Article)
     }
-    override val topBarIconAction = { screenStack: ScreenStack ->
-        screenStack.back()
+    override val topBarIconAction = {
+        backToPreviousScreen()
     }
+    override val shouldShowBackButton = false
 }
