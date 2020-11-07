@@ -4,6 +4,7 @@ import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,8 +22,14 @@ import personal.secminhr.cavern.ui.views.MarkdownView
 import stoneapp.secminhr.cavern.cavernObject.Article
 
 @Composable
-fun ArticleContentView(article: State<Article>) {
-    ScrollableColumn {
+fun ArticleContentView(article: State<Article>, titleState: MutableState<String>) {
+    val scrollState = rememberScrollState()
+    ScrollableColumn(scrollState = scrollState) {
+        if (scrollState.value > 0) {
+            titleState.value = article.value.title
+        } else {
+            titleState.value = "Cavern"
+        }
         ArticleInfo(article.value)
 
         if (article.value.content == "") {

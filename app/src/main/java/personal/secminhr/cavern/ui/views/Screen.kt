@@ -1,12 +1,16 @@
 package personal.secminhr.cavern.ui.views
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import personal.secminhr.cavern.MainActivity.Companion.screenHistory
 
 interface Screen {
     val content: @Composable () -> Unit
     val topBarIcon: @Composable () -> Unit
     val topBarIconAction: () -> Unit
+    val topBarTitle: MutableState<String>
+        get() = mutableStateOf("Cavern")
     val shouldShowBackButton: Boolean
 
     fun sameAppBarIconAs(screen: Screen): @Composable () -> Unit = screen.topBarIcon
