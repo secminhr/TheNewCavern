@@ -2,10 +2,7 @@ package stoneapp.secminhr.coroutine
 
 import kotlinx.coroutines.suspendCancellableCoroutine
 import stoneapp.secminhr.cavern.api.Cavern
-import stoneapp.secminhr.cavern.api.results.ArticleContent
-import stoneapp.secminhr.cavern.api.results.Articles
-import stoneapp.secminhr.cavern.api.results.LogoutResult
-import stoneapp.secminhr.cavern.api.results.User
+import stoneapp.secminhr.cavern.api.results.*
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -51,5 +48,13 @@ suspend fun Cavern.awaitLogout(): LogoutResult? = suspendCancellableCoroutine { 
         continuation.resume(it)
     }.addOnFailureListener {
         continuation.resume(null)
+    }.execute()
+}
+
+suspend fun Cavern.awaitAuthorInfo(username: String): Author = suspendCancellableCoroutine { continuation ->
+    getAuthor(username).addOnSuccessListener {
+        continuation.resume(it)
+    }.addOnFailureListener {
+        continuation.resumeWithException(it)
     }.execute()
 }

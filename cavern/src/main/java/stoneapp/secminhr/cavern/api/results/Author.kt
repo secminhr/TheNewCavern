@@ -1,6 +1,9 @@
 package stoneapp.secminhr.cavern.api.results
 
-import com.android.volley.*
+import com.android.volley.NetworkError
+import com.android.volley.NoConnectionError
+import com.android.volley.Request
+import com.android.volley.RequestQueue
 import org.json.JSONException
 import stoneapp.secminhr.cavern.api.Cavern
 import stoneapp.secminhr.cavern.cavernError.CavernError
@@ -19,7 +22,7 @@ class Author(val username: String, private val queue: RequestQueue): CavernResul
 
         val url = "${Cavern.host}/ajax/user.php?username=$username"
         val request = CavernJsonObjectRequest(Request.Method.GET, url, null,
-                Response.Listener {
+                {
                     val email = try {
                         it.getStringFromKey("email_key")
                     } catch (e: JSONException) { //value not exists
@@ -38,7 +41,7 @@ class Author(val username: String, private val queue: RequestQueue): CavernResul
                         onFailure(it)
                     }
                 },
-                Response.ErrorListener {
+                {
                     when {
                         it is NetworkError -> onFailure(stoneapp.secminhr.cavern.cavernError.NetworkError())
                         it is NoConnectionError -> onFailure(stoneapp.secminhr.cavern.cavernError.NoConnectionError())

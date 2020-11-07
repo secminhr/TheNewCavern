@@ -20,7 +20,7 @@ import personal.secminhr.cavern.viewmodel.LogoutViewModel
 import stoneapp.secminhr.cavern.cavernObject.Account
 
 @Composable
-fun CurrentUserView(user: Account) {
+fun UserView(user: Account) {
 
     val avatarImageView = ImageView(ContextAmbient.current)
     val logoutViewModel: LogoutViewModel = viewModel()
@@ -64,10 +64,14 @@ fun CurrentUserView(user: Account) {
             Text(user.postCount.toString(), modifier = Modifier.weight(0.5f, true))
         }
 
-        OutlinedButton(onClick = { logoutViewModel.logout {
-            MainActivity.currentAccount = null
-        } }, modifier = Modifier.fillMaxWidth().padding(16.dp), contentColor = Color.Red) {
-            Text("Logout")
+        if (user == MainActivity.currentAccount) {
+            OutlinedButton(onClick = {
+                logoutViewModel.logout {
+                    MainActivity.currentAccount = null
+                }
+            }, modifier = Modifier.fillMaxWidth().padding(16.dp), contentColor = Color.Red) {
+                Text("Logout")
+            }
         }
     }
 }

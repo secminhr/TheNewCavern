@@ -33,7 +33,7 @@ class LoginScreen: Screen {
                     })
                 }
             } else {
-                CurrentUserView(it)
+                UserView(it)
             }
         }
     }
