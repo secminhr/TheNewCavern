@@ -11,7 +11,6 @@ import personal.secminhr.cavern.ui.views.MainActivityView
 import personal.secminhr.cavern.ui.views.ScreenStack
 import personal.secminhr.cavern.ui.views.articleContent.ArticleContentScreen
 import personal.secminhr.cavern.ui.views.articles.ArticleScreen
-import personal.secminhr.cavern.viewmodel.ArticlesListViewModel
 import personal.secminhr.cavern.viewmodel.SessionUserViewModel
 import stoneapp.secminhr.cavern.api.Cavern
 import stoneapp.secminhr.cavern.cavernError.SessionExpiredError
@@ -21,12 +20,11 @@ class MainActivity : FragmentActivity() {
 
     private var shouldShowBackButton by mutableStateOf(false)
 
-    private val listViewModel by viewModels<ArticlesListViewModel>()
     private val articleScreen: ArticleScreen by lazy {
-        ArticleScreen(listViewModel, navigate = {
+        ArticleScreen {
             screenHistory.changeScreen(ArticleContentScreen(it))
             shouldShowBackButton = true
-        })
+        }
     }
     private val screenHistory by lazy {
         ScreenStack(articleScreen)
@@ -37,9 +35,8 @@ class MainActivity : FragmentActivity() {
 
         Cavern.initialize(application)
 
-        val sessionUserModel by viewModels<SessionUserViewModel>()
         try {
-            sessionUserModel.login {
+            viewModels<SessionUserViewModel>().value.login {
                 currentAccount = it.account
             }
         } catch (e: SessionExpiredError) {
