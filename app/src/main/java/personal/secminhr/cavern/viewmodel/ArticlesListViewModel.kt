@@ -1,5 +1,6 @@
 package personal.secminhr.cavern.viewmodel
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,7 @@ import kotlin.math.ceil
 
 class ArticlesListViewModel: CavernViewModel() {
 
+    var listState: LazyListState? = null
     private var articles: MutableMap<Int, List<ArticlePreview>> = mutableMapOf()
     private var articlesData: MutableState<List<ArticlePreview>> = mutableStateOf(listOf())
 

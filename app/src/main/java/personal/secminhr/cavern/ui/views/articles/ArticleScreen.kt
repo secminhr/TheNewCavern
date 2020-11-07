@@ -25,7 +25,10 @@ import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 class ArticleScreen(navigate: (ArticlePreview) -> Unit = {}): Screen {
 
     override val content = @Composable {
-        ArticleList(list = viewModel<ArticlesListViewModel>().getArticlesPreview(), onItemClicked = navigate)
+        ArticleList(list = viewModel<ArticlesListViewModel>().getArticlesPreview(),
+                state = viewModel<ArticlesListViewModel>().listState!!,
+                onItemClicked = navigate
+        )
     }
 
     override val topBarIcon = @Composable {

@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumnFor
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
@@ -14,18 +14,14 @@ import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 
 
 @Composable
-fun ArticleList(list: List<ArticlePreview>, onLikeClicked: (Int) -> Unit = {}, onItemClicked: (ArticlePreview) -> Unit = {}, modifier: Modifier = Modifier) {
-
-    var listState = rememberLazyListState()
-
+fun ArticleList(list: List<ArticlePreview>, state: LazyListState, onLikeClicked: (Int) -> Unit = {}, onItemClicked: (ArticlePreview) -> Unit = {}, modifier: Modifier = Modifier) {
 
     if(list.isNullOrEmpty()) {
         Box(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     } else {
-        LazyColumnFor(items = list, state = listState, modifier = modifier) {
-            listState = rememberLazyListState()
+        LazyColumnFor(items = list, state=state, modifier = modifier) {
             ArticlePreviewItem(
                     preview = it,
                     onLikeClicked = onLikeClicked,
