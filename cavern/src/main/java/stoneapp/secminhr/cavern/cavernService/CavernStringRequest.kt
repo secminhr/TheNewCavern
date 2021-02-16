@@ -9,8 +9,5 @@ open class CavernStringRequest(method: Int,
                           errorListener: Response.ErrorListener? = null):
         StringRequest(method, url, listener, errorListener) {
 
-    override fun getHeaders(): MutableMap<String, String> {
-        val header = super.getHeaders() + Pair("x-xsrf-token", XSRFTokenGenerator.token)
-        return header.toMutableMap()
-    }
+    override fun getHeaders() = super.getHeaders() + XSRfHeader(XSRFTokenGenerator.token)
 }

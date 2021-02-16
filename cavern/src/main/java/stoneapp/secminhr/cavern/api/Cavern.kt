@@ -5,15 +5,18 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.BasicNetwork
 import com.android.volley.toolbox.HurlStack
 import com.android.volley.toolbox.NoCache
-import stoneapp.secminhr.cavern.api.results.*
-import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
+import kotlinx.coroutines.flow.Flow
+import stoneapp.secminhr.cavern.api.callback.CavernCallback
+import stoneapp.secminhr.cavern.api.callback.results.SendComment
+import stoneapp.secminhr.cavern.api.requests.*
+import stoneapp.secminhr.cavern.cavernObject.*
 import stoneapp.secminhr.cavern.cavernService.CavernCookieStore
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.net.CookiePolicy
 import kotlin.concurrent.thread
 
-class Cavern private constructor(private val context: Context) {
+class Cavern private constructor(context: Context) {
 
     private val requestQueue = RequestQueue(NoCache(), BasicNetwork(HurlStack())).apply { start() }
 
@@ -23,48 +26,48 @@ class Cavern private constructor(private val context: Context) {
         }
     }
 
-    fun getArticles(page: Int, limit: Int = 10): CavernTask<Articles> {
-        return CavernTask(Articles(requestQueue, page, limit))
+    suspend fun getArticles(pageLimit: Int = 10): Flow<Pair<Int, List<ArticlePreview>>> {
+        return Articles(pageLimit).get()
     }
 
-    fun getArticleContent(preview: ArticlePreview): CavernTask<ArticleContent> {
-        return CavernTask(ArticleContent(requestQueue, preview))
+    suspend fun getArticleContent(preview: ArticlePreview): Article {
+        return ArticleContent(preview).get()
     }
 
-    fun getAuthor(username: String): CavernTask<Author> {
-        return CavernTask(Author(username, requestQueue))
+    suspend fun getAuthor(username: String): Account {
+        return Author(username).get()
     }
 
-    fun getComments(id: Int): CavernTask<Comments> {
-        return CavernTask(Comments(id, requestQueue))
+    suspend fun getComments(id: Int): List<Comment> {
+        return Comments(id).get()
     }
 
-    fun sendComment(pid: Int, content: String): CavernTask<SendComment> {
-        return CavernTask(SendComment(pid, content, requestQueue))
+    fun sendComment(pid: Int, content: String): CavernTask<SendComment, CavernCallback<SendComment>> {
+        return CavernCallback(SendComment(pid, content, requestQueue))
     }
 
-    fun login(username: String, password: String): CavernTask<User> {
-        return CavernTask(User(username, password, requestQueue))
+    suspend fun login(username: String, password: String): Boolean {
+        return Login(username, password).get()
     }
 
-    fun login(): CavernTask<User> {
-        return CavernTask(SessionUser(requestQueue))
+    suspend fun currentUser(): Account {
+        return CurrentUser().get()
     }
 
-    fun logout(): CavernTask<LogoutResult> {
-        return CavernTask(LogoutResult(requestQueue))
+    suspend fun roleDetail(level: Int): Role {
+        return RoleDetail(level).get()
     }
 
-    fun like(id: Int): CavernTask<LikeResult> {
-        return CavernTask(LikeResult(id, requestQueue))
+    suspend fun logout(): Boolean {
+        return Logout().get()
     }
 
-    fun publishArticle(title: String, content: String): CavernTask<PublishArticle> {
-        return CavernTask(PublishArticle(title, content, requestQueue))
+    suspend fun like(id: Int) {
+        return Like(id).get()
     }
 
-    fun getRoleDetail(level: Int, queue: RequestQueue): CavernTask<RoleDetail> {
-        return CavernTask(RoleDetail(level, queue))
+    suspend fun publishArticle(title: String, content: String): Boolean {
+        return PublishArticle(title, content).get()
     }
 
     companion object {

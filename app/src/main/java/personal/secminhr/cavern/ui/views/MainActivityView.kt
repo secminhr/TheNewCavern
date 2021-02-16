@@ -4,7 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.viewinterop.viewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import personal.secminhr.cavern.ui.style.CavernTheme
 import personal.secminhr.cavern.viewmodel.ArticlesListViewModel
 
@@ -14,16 +14,10 @@ fun MainActivityView(screen: Screen) {
 
     CavernTheme {
         Column {
-            Crossfade(current = screen) {
+            Crossfade(screen) {
                 it.content()
             }
         }
     }
 }
-
-//@Preview(showBackground = true, name = "ArticleScreen")
-//@Composable
-//fun DefaultPreview() {
-//    MainActivityView(MutableLiveData(articleScreen), MutableLiveData(false))
-//}
 

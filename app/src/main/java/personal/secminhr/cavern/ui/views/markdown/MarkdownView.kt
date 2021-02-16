@@ -1,11 +1,15 @@
-package personal.secminhr.cavern.ui.views
+package personal.secminhr.cavern.ui.views.markdown
 
+import android.graphics.Color
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 
 @Composable
-fun MarkdownView(text: String) {
+fun MarkdownView(text: String, modifier: Modifier = Modifier, onUserLinkClicked:(username: String) -> Unit = {}) {
     val markdownRenderHTML = "<!doctype html>\n" +
             "<html>\n" +
             " <head> \n" +
@@ -32,9 +36,32 @@ fun MarkdownView(text: String) {
             " </body>\n" +
             "</html>"
 
-    AndroidView({ WebView(it) }) {
-        it.settings.javaScriptEnabled = true
-        val markdown = markdownRenderHTML.replace("{{markdown_replace}}", text)
-        it.loadDataWithBaseURL("https://stoneapp.tech/cavern", markdown, "text/html", "utf-8", "")
-    }
+    lateinit var markdown: String
+
+    AndroidView(viewBlock = {
+        WebView(it).apply {
+            settings.javaScriptEnabled = true
+            markdown = markdownRenderHTML.replace("{{markdown_replace}}", text)
+            loadDataWithBaseURL("https://stoneapp.tech/cavern", markdown, "text/html", "utf-8", "")
+            setBackgroundColor(Color.TRANSPARENT)
+        }.apply {
+            webViewClient = object: WebViewClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean {
+                    val url = request?.url?.toString()
+                    url?.let {
+                        return if (it.startsWith("https://stoneapp.tech/user.php?username=")) {
+                            onUserLinkClicked(it.drop("https://stoneapp.tech/user.php?username=".length))
+                            true
+                        } else {
+                            super.shouldOverrideUrlLoading(view, request)
+                        }
+                    }
+                    return super.shouldOverrideUrlLoading(view, request)
+                }
+            }
+        }
+    }, modifier = modifier)
 }

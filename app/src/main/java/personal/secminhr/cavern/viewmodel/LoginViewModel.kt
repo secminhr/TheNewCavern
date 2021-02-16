@@ -1,22 +1,18 @@
 package personal.secminhr.cavern.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import stoneapp.secminhr.cavern.api.Cavern
-import stoneapp.secminhr.cavern.cavernError.WrongCredentialError
 import stoneapp.secminhr.cavern.cavernObject.Account
-import stoneapp.secminhr.coroutine.awaitLogin
+import stoneapp.secminhr.cavern.cavernTool.CavernViewModel
 
-class LoginViewModel: ViewModel() {
+class LoginViewModel: CavernViewModel() {
 
     fun login(username: String, password: String, onFinished: (Account) -> Unit, onWrongCredential: () -> Unit) {
         viewModelScope.launch {
-            try {
-                Cavern.instance?.awaitLogin(username, password)?.let {
-                    onFinished(it.account)
-                }
-            } catch (e: WrongCredentialError) {
+            val succeed = cavernApi.login(username, password)
+            if (succeed) {
+                cavernApi.currentUser().run(onFinished)
+            } else {
                 onWrongCredential()
             }
         }

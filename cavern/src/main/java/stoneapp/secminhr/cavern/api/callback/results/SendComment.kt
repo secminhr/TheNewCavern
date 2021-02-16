@@ -1,6 +1,9 @@
-package stoneapp.secminhr.cavern.api.results
+package stoneapp.secminhr.cavern.api.callback.results
 
-import com.android.volley.*
+import com.android.volley.NetworkError
+import com.android.volley.NoConnectionError
+import com.android.volley.RequestQueue
+import com.android.volley.Response
 import com.google.gson.JsonParser
 import stoneapp.secminhr.cavern.api.Cavern
 import stoneapp.secminhr.cavern.cavernError.CavernError
@@ -22,7 +25,7 @@ class SendComment(private val pid: Int,
                 "pid" to pid.toString(),
                 "content" to content
         )
-        val request = object: CavernStringRequest(Request.Method.POST, url,
+        val request = object: CavernStringRequest(Method.POST, url,
                 Response.Listener {
                     val response = JsonParser().parse(it).asJsonObject
                     succeed = response.get("status").asBoolean

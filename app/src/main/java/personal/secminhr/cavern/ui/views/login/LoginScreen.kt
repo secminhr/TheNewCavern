@@ -1,11 +1,10 @@
 package personal.secminhr.cavern.ui.views.login
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.Icon
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.runtime.*
-import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.viewinterop.viewModel
 import personal.secminhr.cavern.MainActivity
 import personal.secminhr.cavern.ui.views.Screen
@@ -13,7 +12,6 @@ import personal.secminhr.cavern.viewmodel.LoginViewModel
 
 class LoginScreen: Screen {
 
-    @ExperimentalFocus
     override val content = @Composable {
         var isCredentialWrong: Boolean by remember { mutableStateOf(false) }
         var isLogging: Boolean by remember { mutableStateOf(false) }
@@ -21,10 +19,10 @@ class LoginScreen: Screen {
 
         Crossfade(MainActivity.currentAccount) {
             if (it == null) {
-
                 LoginView(isCredentialWrong, isLogging) { username, password ->
                     isLogging = true
                     viewModel.login(username, password, onFinished = { user ->
+                        isCredentialWrong = false
                         isLogging = false
                         MainActivity.currentAccount = user
                     }, onWrongCredential = {
@@ -33,15 +31,19 @@ class LoginScreen: Screen {
                     })
                 }
             } else {
-                UserView(it)
+                val username = remember(it) { mutableStateOf(it.username) }
+                UserView(username)
             }
         }
     }
-    override val topBarIcon = @Composable {
-        Icon(Icons.Default.Article)
+
+    val icon = @Composable {
+        Icon(Icons.Default.Article, "Article")
     }
-    override val topBarIconAction = {
-        backToPreviousScreen()
-    }
+
+    override val topBarIcons = listOf(icon)
+    override val topBarIconActions = listOf(
+        { backToPreviousScreen() }
+    )
     override val shouldShowBackButton = false
 }

@@ -12,12 +12,16 @@ val articlePreviewNormalLike = ArticlePreview("title1", "author1", "username1", 
 val articlePreviewLongText = ArticlePreview("title1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111", "author1", "username1", Date(), ObservableInt(5), 10, false)
 
 //screen preview data
-//val articleScreen = ArticleScreen(
-//    MutableLiveData(mutableListOf(
-//        articlePreviewNormalLike,
-//        articlePreviewNormalDislike
-//    ))
-//)
+//val mockScreen = object:Screen {
+//    override val content = @Composable {
+//        Text("Content", modifier = Modifier.fillMaxSize())
+//    }
+//    override val topBarIcon = @Composable {
+//        Icon(Icons.Default.AccountCircle, null)
+//    }
+//    override val topBarIconAction = {}
+//    override val shouldShowBackButton = true
+//}
 
 //article content preview data
 val articleContentDislike = MutableLiveData(Article(813, "Title1", "Sec", "secminhr", false, ""))

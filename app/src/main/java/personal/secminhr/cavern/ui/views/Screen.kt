@@ -7,36 +7,27 @@ import personal.secminhr.cavern.MainActivity.Companion.screenHistory
 
 interface Screen {
     val content: @Composable () -> Unit
-    val topBarIcon: @Composable () -> Unit
-    val topBarIconAction: () -> Unit
+    val topBarIcons: List<@Composable () -> Unit>
+    val topBarIconActions: List<() -> Unit>
     val topBarTitle: MutableState<String>
         get() = mutableStateOf("Cavern")
     val shouldShowBackButton: Boolean
 
-    fun sameAppBarIconAs(screen: Screen): @Composable () -> Unit = screen.topBarIcon
-    fun sameAppBarIconActionAs(screen: Screen) = screen.topBarIconAction
+    fun sameAppBarIconAs(screen: Screen): List<@Composable () -> Unit> = screen.topBarIcons
+    fun sameAppBarIconActionAs(screen: Screen) = screen.topBarIconActions
+
+    val leavingScreen: (() -> Unit) -> Unit
+        get() = { it() }
 
     fun navigateTo(screen: Screen) {
-        screenHistory.changeScreen(screen)
+        leavingScreen {
+            screenHistory.changeScreen(screen)
+        }
     }
 
     fun backToPreviousScreen() {
-        screenHistory.back()
-    }
-
-    companion object EmptyScreen: Screen {
-
-        override val content = @Composable {
-            //empty
+        leavingScreen {
+            screenHistory.back()
         }
-
-        override val topBarIcon = @Composable {
-            //empty
-        }
-
-        override val topBarIconAction = {
-            //empty
-        }
-        override val shouldShowBackButton = false
     }
 }
