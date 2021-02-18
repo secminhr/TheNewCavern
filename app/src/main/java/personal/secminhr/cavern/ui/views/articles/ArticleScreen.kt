@@ -1,7 +1,9 @@
 package personal.secminhr.cavern.ui.views.articles
 
 
+import android.content.Context
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExtendedFloatingActionButton
@@ -27,12 +29,15 @@ import personal.secminhr.cavern.MainActivity.Companion.loginScreen
 import personal.secminhr.cavern.ui.style.purple500
 import personal.secminhr.cavern.ui.views.Screen
 import personal.secminhr.cavern.viewmodel.ArticlesListViewModel
+import stoneapp.secminhr.cavern.cavernError.CavernError
 
 open class ArticleScreen: Screen {
 
     override val content = @Composable {
         val viewModel = viewModel<ArticlesListViewModel>()
-        ArticleList(list = viewModel.getArticlesPreview(),
+        val context = LocalContext.current
+        ArticleList(list = viewModel.getArticlesPreview(onNoConnection = { onErrorToast(context, it) },
+                                                        onNetworkError = { onErrorToast(context, it) }),
                 state = viewModel.listState!!,
                 onItemClicked = { navigateTo(articleContentScreen(it)) },
                 onLikeClicked = {
@@ -49,6 +54,10 @@ open class ArticleScreen: Screen {
                                             icon = { Icon(Icons.Default.Add, "Add", tint = Color.White) })
             }
         }
+    }
+
+    private fun onErrorToast(context: Context, e: CavernError) {
+        Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
     }
 
     private val userIcon = @Composable {

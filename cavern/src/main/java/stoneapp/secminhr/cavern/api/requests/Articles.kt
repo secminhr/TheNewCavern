@@ -5,9 +5,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import stoneapp.secminhr.cavern.api.Cavern
+import stoneapp.secminhr.cavern.cavernError.NetworkError
+import stoneapp.secminhr.cavern.cavernError.NoConnectionError
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 import stoneapp.secminhr.cavern.cavernService.gson
 import java.net.URL
+import java.net.UnknownHostException
 
 suspend fun Articles(pageLimit: Int): Flow<Pair<Int, List<ArticlePreview>>> = flow {
     var counter = 1
@@ -16,7 +19,12 @@ suspend fun Articles(pageLimit: Int): Flow<Pair<Int, List<ArticlePreview>>> = fl
         runCatching {
             val url = URL("${Cavern.host}/ajax/posts.php?page=$counter&limit=$pageLimit")
             url.openStream().inputAsJson()
-        }.getOrThrow().run {
+        }.getOrElse {
+            throw when (it) {
+                is UnknownHostException -> NoConnectionError()
+                else -> NetworkError()
+            }
+        }.run {
             list.addAll(gson.fromJson(
                 getAsJsonArray("posts"),
                 Array<ArticlePreview>::class.java
