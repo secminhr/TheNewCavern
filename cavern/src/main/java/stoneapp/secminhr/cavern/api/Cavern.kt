@@ -1,13 +1,7 @@
 package stoneapp.secminhr.cavern.api
 
 import android.content.Context
-import com.android.volley.RequestQueue
-import com.android.volley.toolbox.BasicNetwork
-import com.android.volley.toolbox.HurlStack
-import com.android.volley.toolbox.NoCache
 import kotlinx.coroutines.flow.Flow
-import stoneapp.secminhr.cavern.api.callback.CavernCallback
-import stoneapp.secminhr.cavern.api.callback.results.SendComment
 import stoneapp.secminhr.cavern.api.requests.*
 import stoneapp.secminhr.cavern.cavernObject.*
 import stoneapp.secminhr.cavern.cavernService.CavernCookieStore
@@ -17,8 +11,6 @@ import java.net.CookiePolicy
 import kotlin.concurrent.thread
 
 class Cavern private constructor(context: Context) {
-
-    private val requestQueue = RequestQueue(NoCache(), BasicNetwork(HurlStack())).apply { start() }
 
     init {
         thread {
@@ -42,8 +34,8 @@ class Cavern private constructor(context: Context) {
         return Comments(id).get()
     }
 
-    fun sendComment(pid: Int, content: String): CavernTask<SendComment, CavernCallback<SendComment>> {
-        return CavernCallback(SendComment(pid, content, requestQueue))
+    suspend fun sendComment(pid: Int, content: String, sender: Account): Comment? {
+        return SendComment(pid, content, sender).get()
     }
 
     suspend fun login(username: String, password: String): Boolean {

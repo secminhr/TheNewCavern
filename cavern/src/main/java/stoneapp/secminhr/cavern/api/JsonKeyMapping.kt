@@ -28,7 +28,8 @@ val mapping = mapOf(
     "upvote_key" to "likes_count",
     "date_key" to "time",
     "author_key" to "name",
-    "title_key" to "title"
+    "title_key" to "title",
+    "comment_id_key" to "comment_id"
 )
 fun getStringFromMap(key: String): String {
     return mapping[key] ?: ""

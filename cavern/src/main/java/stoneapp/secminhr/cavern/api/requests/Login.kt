@@ -27,14 +27,10 @@ class Login(val username: String, private val password: String): Result<Boolean>
             val data = "username=$username&password=$password".toByteArray()
             connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded")
             connection.addRequestProperty("Content-Length", data.size.toString())
-            connection.connectTimeout = 8000
-            connection.readTimeout = 8000
             connection.doOutput = true
 
             connection.runCatching {
                 outputStream.write(data)
-                outputStream.flush()
-                outputStream.close()
 
                 if (responseCode == 302) {
                     val location = getHeaderField("location")

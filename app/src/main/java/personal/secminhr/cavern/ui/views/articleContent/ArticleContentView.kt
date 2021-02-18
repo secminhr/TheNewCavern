@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.runtime.*
@@ -13,17 +14,25 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import personal.secminhr.cavern.MainActivity
 import personal.secminhr.cavern.ui.views.login.UserView
 import personal.secminhr.cavern.ui.views.markdown.MarkdownView
+import personal.secminhr.cavern.viewmodel.ArticleContentViewModel
 import stoneapp.secminhr.cavern.cavernObject.Article
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 import stoneapp.secminhr.cavern.cavernObject.Comment
 
 @ExperimentalMaterialApi
 @Composable
-fun ArticleContentView(article: State<Article>, preview: ArticlePreview, titleState: MutableState<String>, comments: State<List<Comment>>) {
+fun ArticleContentView(
+    article: State<Article>,
+    preview: ArticlePreview,
+    titleState: MutableState<String>,
+    comments: MutableState<List<Comment>>,
+    onCommentSend: (Comment) -> Unit
+) {
     val bottomSheetScaffoldState =
             rememberBottomSheetScaffoldState(
                     bottomSheetState = rememberBottomSheetState(
@@ -72,22 +81,28 @@ fun ArticleContentView(article: State<Article>, preview: ArticlePreview, titleSt
                 Divider()
                 val scrollScope = rememberCoroutineScope()
                 val interactionState = remember { InteractionState() }
-                OutlinedTextField(value = comment.value,
-                                    onValueChange = {
-                                        comment.value = it
-                                        scrollScope.launch {
-                                            state.smoothScrollTo(state.maxValue)
-                                        }
-                                    },
-                                    onTextInputStarted = {
-                                        it.showSoftwareKeyboard()
-                                        scrollScope.launch {
-                                            state.smoothScrollTo(state.maxValue)
-                                        }
-                                    },
-                                    label = { Text("Your new comment") },
-                                     modifier = Modifier.padding(16.dp),
-                                    interactionState = interactionState
+                val viewModel = viewModel<ArticleContentViewModel>()
+                OutlinedTextField(
+                    value = comment.value,
+                    onValueChange = {
+                        comment.value = it
+                        scrollScope.launch {
+                            state.smoothScrollTo(state.maxValue)
+                        }
+                    },
+                    label = { Text("Your new comment") },
+                     modifier = Modifier.padding(16.dp),
+                    interactionState = interactionState,
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            viewModel.sendComment(preview.id, comment.value, MainActivity.currentAccount!!) {
+                                onCommentSend(it)
+                                comment.value = ""
+                            }
+                        }) {
+                            Icon(Icons.Default.Send, "Send comment")
+                        }
+                    }
                 )
             }
 

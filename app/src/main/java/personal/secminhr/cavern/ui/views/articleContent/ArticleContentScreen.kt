@@ -15,10 +15,16 @@ class ArticleContentScreen(preview: ArticlePreview): Screen {
     @ExperimentalMaterialApi
     override val content = @Composable {
         val viewModel: ArticleContentViewModel = viewModel()
-        ArticleContentView(article = viewModel.getArticleContent(preview),
-                            titleState = topBarTitle,
-                            preview = preview,
-                            comments = viewModel.getComments(preview))
+        var comments = viewModel.getComments(preview)
+        ArticleContentView(
+            article = viewModel.getArticleContent(preview),
+            titleState = topBarTitle,
+            preview = preview,
+            comments = comments,
+            onCommentSend = {
+                comments = viewModel.getComments(preview)
+            }
+        )
     }
     override val topBarIcons: List<@Composable () -> Unit> = super.sameAppBarIconAs(articleScreen)
     override val topBarIconActions: List<() -> Unit> = super.sameAppBarIconActionAs(articleScreen)
