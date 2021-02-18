@@ -3,8 +3,10 @@ package personal.secminhr.cavern.ui.views.articles
 
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -32,6 +34,8 @@ import personal.secminhr.cavern.viewmodel.ArticlesListViewModel
 
 open class ArticleScreen: Screen {
 
+    @ExperimentalFoundationApi
+    @ExperimentalMaterialApi
     override val content = @Composable {
         val viewModel = viewModel<ArticlesListViewModel>()
         ArticleList(list = viewModel.getArticlesPreview(onNoConnection = { mainActivity.showToast(it.message!!, Toast.LENGTH_SHORT) },
@@ -69,9 +73,11 @@ open class ArticleScreen: Screen {
         }
     }
 
-    override val topBarIcons: List<@Composable () -> Unit> = listOf(
-        userIcon
-    )
+    override val topBarIcons: List<@Composable () -> Unit>
+        get() {
+            return listOf(userIcon)
+        }
+
     override val topBarIconActions: List<() -> Unit> = listOf(
         { navigateTo(loginScreen) }
     )

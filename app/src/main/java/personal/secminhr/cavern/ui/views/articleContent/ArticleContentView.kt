@@ -33,6 +33,7 @@ fun ArticleContentView(
     comments: MutableState<List<Comment>>,
     onCommentSend: () -> Unit
 ) {
+    val likeState = remember { mutableStateOf(preview.liked) }
     val bottomSheetScaffoldState =
             rememberBottomSheetScaffoldState(
                     bottomSheetState = rememberBottomSheetState(
@@ -53,10 +54,18 @@ fun ArticleContentView(
                 titleState.value = "Cavern"
             }
 
-            ArticleInfo(article.value) {
+            val viewModel = viewModel<ArticleContentViewModel>()
+            ArticleInfo(article.value, preview, likeState.value, onAuthorClicked = {
                 bottomSheetUsername.value = article.value.authorUsername
                 bottomSheetScaffoldState.bottomSheetState.expand()
-            }
+            }, onLikeClicked = {
+                likeState.value = !likeState.value
+                viewModel.likeArticle(preview.id) { success ->
+                    if (!success) {
+                        likeState.value = !likeState.value
+                    }
+                }
+            })
 
             if (article.value.content == "") {
                 CircularProgressIndicator()
@@ -112,7 +121,7 @@ fun ArticleContentView(
 }
 
 @Composable
-fun ArticleInfo(article: Article, onAuthorClicked: () -> Unit) {
+fun ArticleInfo(article: Article, preview: ArticlePreview, isLiked: Boolean, onAuthorClicked: () -> Unit, onLikeClicked: () -> Unit) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.align(Alignment.CenterStart)) {
             Text(article.title, modifier = Modifier.padding(start = 16.dp, top =  16.dp, end = 64.dp),
@@ -122,10 +131,10 @@ fun ArticleInfo(article: Article, onAuthorClicked: () -> Unit) {
             }
         }
 
-        IconButton(onClick = {}, modifier = Modifier
+        IconButton(onClick = onLikeClicked, modifier = Modifier
             .align(Alignment.CenterEnd)
             .size(48.dp)) {
-            if(article.isLiked) {
+            if(isLiked) {
                 Icon(Icons.Filled.ThumbUp, "Liked")
             } else {
                 Icon(Icons.Outlined.ThumbUp, "")

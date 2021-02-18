@@ -24,10 +24,10 @@ class Cavern private constructor(context: Context) {
     suspend fun sendComment(pid: Int, content: String) = SendComment(pid, content)
     suspend fun login(username: String, password: String) = Login(username, password)
     suspend fun currentUser() = User()
-    suspend fun roleDetail(level: Int) = RoleDetail(level)
     suspend fun logout() = Logout()
     suspend fun like(id: Int) = Like(id)
     suspend fun publishArticle(title: String, content: String) = PublishArticle(title, content)
+    suspend fun deleteArticle(pid: Int) = DeleteArticle(pid)
 
     companion object {
         var instance: Cavern? = null

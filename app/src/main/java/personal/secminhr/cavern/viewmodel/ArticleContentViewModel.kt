@@ -30,6 +30,15 @@ class ArticleContentViewModel: CavernViewModel() {
         return content
     }
 
+    fun deleteArticle(pid: Int, onSuccess: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val success = cavernApi.deleteArticle(pid)
+            if (success) {
+                onSuccess()
+            }
+        }
+    }
+
     fun getComments(preview: ArticlePreview, onError: (CavernError) -> Unit = {}): MutableState<List<Comment>> {
         comments.value = listOf()
         viewModelScope.launch(Dispatchers.IO) {
@@ -51,7 +60,12 @@ class ArticleContentViewModel: CavernViewModel() {
                 onSuccess()
             }
         }
+    }
 
+    fun likeArticle(pid: Int, result: (Boolean) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            result(cavernApi.like(pid))
+        }
     }
 
 }
