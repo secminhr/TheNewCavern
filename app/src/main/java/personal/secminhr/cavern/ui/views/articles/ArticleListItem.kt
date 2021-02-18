@@ -65,9 +65,9 @@ fun LikeData(preview: ArticlePreview,
                     if (MainActivity.hasCurrentUser) {
                         preview.liked = it
                         if (it) {
-                            preview.upvote.set(preview.upvote.get() + 1)
+                            preview.upvote = (preview.upvote.toInt() + 1).toString()
                         } else {
-                            preview.upvote.set(preview.upvote.get() - 1)
+                            preview.upvote = (preview.upvote.toInt() - 1).toString()
                         }
                     }
                 }
@@ -78,7 +78,7 @@ fun LikeData(preview: ArticlePreview,
                 Icon(Icons.Outlined.ThumbUp, "")
             }
         }
-        Text(preview.upvote.get().toString(),
+        Text(preview.upvote,
                 color = Color.Gray,
                 fontSize = 16.sp,
                 modifier = Modifier.align(Alignment.CenterVertically))

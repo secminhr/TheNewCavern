@@ -1,9 +1,9 @@
 package stoneapp.secminhr.cavern.api
 
 import android.content.Context
-import kotlinx.coroutines.flow.Flow
 import stoneapp.secminhr.cavern.api.requests.*
-import stoneapp.secminhr.cavern.cavernObject.*
+import stoneapp.secminhr.cavern.cavernObject.Account
+import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 import stoneapp.secminhr.cavern.cavernService.CavernCookieStore
 import java.net.CookieHandler
 import java.net.CookieManager
@@ -18,49 +18,18 @@ class Cavern private constructor(context: Context) {
         }
     }
 
-    suspend fun getArticles(pageLimit: Int = 10): Flow<Pair<Int, List<ArticlePreview>>> {
-        return Articles(pageLimit).get()
-    }
-
-    suspend fun getArticleContent(preview: ArticlePreview): Article {
-        return ArticleContent(preview).get()
-    }
-
-    suspend fun getAuthor(username: String): Account {
-        return Author(username).get()
-    }
-
-    suspend fun getComments(id: Int): List<Comment> {
-        return Comments(id).get()
-    }
-
-    suspend fun sendComment(pid: Int, content: String, sender: Account): Comment? {
-        return SendComment(pid, content, sender).get()
-    }
-
-    suspend fun login(username: String, password: String): Boolean {
-        return Login(username, password).get()
-    }
-
-    suspend fun currentUser(): Account {
-        return CurrentUser().get()
-    }
-
-    suspend fun roleDetail(level: Int): Role {
-        return RoleDetail(level).get()
-    }
-
-    suspend fun logout(): Boolean {
-        return Logout().get()
-    }
-
-    suspend fun like(id: Int) {
-        return Like(id).get()
-    }
-
-    suspend fun publishArticle(title: String, content: String): Boolean {
-        return PublishArticle(title, content).get()
-    }
+    suspend fun getArticles(pageLimit: Int = 10) = Articles(pageLimit)
+    suspend fun getArticleContent(preview: ArticlePreview) = ArticleContent(preview)
+    suspend fun getAuthor(username: String) = User(username)
+    suspend fun getComments(id: Int) = Comments(id)
+    suspend fun sendComment(pid: Int, content: String, sender: Account) =
+        SendComment(pid, content, sender)
+    suspend fun login(username: String, password: String) = Login(username, password)
+    suspend fun currentUser() = User()
+    suspend fun roleDetail(level: Int) = RoleDetail(level)
+    suspend fun logout() = Logout()
+    suspend fun like(id: Int) = Like(id)
+    suspend fun publishArticle(title: String, content: String) = PublishArticle(title, content)
 
     companion object {
         var instance: Cavern? = null
