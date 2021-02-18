@@ -1,6 +1,7 @@
 package personal.secminhr.cavern
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.getValue
@@ -20,7 +21,12 @@ import stoneapp.secminhr.cavern.cavernError.SessionExpiredError
 import stoneapp.secminhr.cavern.cavernObject.Account
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 
+lateinit var mainActivity: MainActivity
 class MainActivity : FragmentActivity() {
+
+    init {
+        mainActivity = this
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +58,12 @@ class MainActivity : FragmentActivity() {
             super.onBackPressed() //exit
         } else {
             screenHistory.currentScreen.value?.backToPreviousScreen()
+        }
+    }
+
+    fun showToast(message: String, duration: Int) {
+        runOnUiThread {
+            Toast.makeText(this, message, duration).show()
         }
     }
 

@@ -1,6 +1,7 @@
 package personal.secminhr.cavern.ui.views.login
 
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ButtonDefaults
@@ -20,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import personal.secminhr.cavern.MainActivity
 import personal.secminhr.cavern.R
+import personal.secminhr.cavern.mainActivity
 import personal.secminhr.cavern.viewmodel.LogoutViewModel
 import personal.secminhr.cavern.viewmodel.UserInfoViewModel
 
@@ -28,7 +30,9 @@ fun UserView(username: State<String>) {
 
     val infoViewModel = viewModel<UserInfoViewModel>()
     val user = remember(username.value) {
-        infoViewModel.getAuthorInfo(username.value)
+        infoViewModel.getAuthorInfo(username.value) {
+            mainActivity.showToast(it.message!!, Toast.LENGTH_SHORT)
+        }
     }
 
     val avatarImageView = ImageView(LocalContext.current)

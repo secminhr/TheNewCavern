@@ -8,9 +8,12 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import stoneapp.secminhr.cavern.api.Cavern
+import stoneapp.secminhr.cavern.cavernError.NetworkError
+import stoneapp.secminhr.cavern.cavernError.NoConnectionError
 import stoneapp.secminhr.cavern.cavernObject.Account
 import java.lang.reflect.Type
 import java.net.URL
+import java.net.UnknownHostException
 
 suspend fun User(username: String? = null): Account = withContext(Dispatchers.IO) {
     val data = runCatching {
@@ -20,17 +23,25 @@ suspend fun User(username: String? = null): Account = withContext(Dispatchers.IO
             URL("${Cavern.host}/ajax/user.php")
 
         url.openStream().inputAs<AccountData>()
-    }.getOrThrow()
+    }.getOrElse {
+        throw when (it) {
+            is UnknownHostException -> throw NoConnectionError()
+            else -> NetworkError()
+        }
+    }
 
-    val role = RoleDetail(data.level)
-    Account(
-        data.username,
-        data.nickname,
-        data.postCount,
-        data.email,
-        "https://www.gravatar.com/avatar/${data.hash}?d=https%3A%2F%2Ftocas-ui.com%2Fassets%2Fimg%2F5e5e3a6.png&s=500",
-        role
-    )
+    runCatching {
+        RoleDetail(data.level)
+    }.getOrThrow().run {
+        Account(
+            data.username,
+            data.nickname,
+            data.postCount,
+            data.email,
+            "https://www.gravatar.com/avatar/${data.hash}?d=https%3A%2F%2Ftocas-ui.com%2Fassets%2Fimg%2F5e5e3a6.png&s=500",
+            this
+        )
+    }
 }
 
 data class AccountData(

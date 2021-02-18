@@ -2,7 +2,6 @@ package stoneapp.secminhr.cavern.api
 
 import android.content.Context
 import stoneapp.secminhr.cavern.api.requests.*
-import stoneapp.secminhr.cavern.cavernObject.Account
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 import stoneapp.secminhr.cavern.cavernService.CavernCookieStore
 import java.net.CookieHandler
@@ -22,8 +21,7 @@ class Cavern private constructor(context: Context) {
     suspend fun getArticleContent(preview: ArticlePreview) = ArticleContent(preview)
     suspend fun getAuthor(username: String) = User(username)
     suspend fun getComments(id: Int) = Comments(id)
-    suspend fun sendComment(pid: Int, content: String, sender: Account) =
-        SendComment(pid, content, sender)
+    suspend fun sendComment(pid: Int, content: String) = SendComment(pid, content)
     suspend fun login(username: String, password: String) = Login(username, password)
     suspend fun currentUser() = User()
     suspend fun roleDetail(level: Int) = RoleDetail(level)

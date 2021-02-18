@@ -31,7 +31,7 @@ fun ArticleContentView(
     preview: ArticlePreview,
     titleState: MutableState<String>,
     comments: MutableState<List<Comment>>,
-    onCommentSend: (Comment) -> Unit
+    onCommentSend: () -> Unit
 ) {
     val bottomSheetScaffoldState =
             rememberBottomSheetScaffoldState(
@@ -95,8 +95,8 @@ fun ArticleContentView(
                     interactionState = interactionState,
                     trailingIcon = {
                         IconButton(onClick = {
-                            viewModel.sendComment(preview.id, comment.value, MainActivity.currentAccount!!) {
-                                onCommentSend(it)
+                            viewModel.sendComment(preview.id, comment.value) {
+                                onCommentSend()
                                 comment.value = ""
                             }
                         }) {

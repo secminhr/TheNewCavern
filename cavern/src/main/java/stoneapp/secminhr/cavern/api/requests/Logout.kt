@@ -16,7 +16,9 @@ suspend fun Logout(): Boolean = withContext(Dispatchers.IO) {
         c.setRequestProperty(header.first, header.second)
         c.connect()
         c
-    }.getOrThrow()
+    }.getOrElse {
+        return@withContext false
+    }
 
     connection.responseCode == HttpURLConnection.HTTP_OK
 }

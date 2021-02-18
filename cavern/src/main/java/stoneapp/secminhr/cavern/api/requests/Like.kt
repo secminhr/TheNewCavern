@@ -7,17 +7,21 @@ import stoneapp.secminhr.cavern.cavernService.XSRFTokenGenerator
 import stoneapp.secminhr.cavern.cavernService.XSRfHeader
 import java.net.URL
 
-suspend fun Like(id: Int) = withContext(Dispatchers.IO) {
+suspend fun Like(id: Int): Boolean = withContext(Dispatchers.IO) {
     runCatching {
         val url = URL("${Cavern.host}/ajax/like.php?pid=$id")
         url.openConnection()
-    }.getOrThrow().runCatching {
+    }.getOrElse {
+        return@withContext false
+    }.runCatching {
         val header = XSRfHeader(XSRFTokenGenerator.token)
         setRequestProperty(header.first, header.second)
         doOutput = true
         doInput = true
         this.getInputStream().inputAsJson()
+    }.onFailure {
+        return@withContext false
     }
 
-    return@withContext
+    return@withContext true
 }

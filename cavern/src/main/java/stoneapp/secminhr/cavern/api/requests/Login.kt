@@ -15,27 +15,31 @@ suspend fun Login(username: String, password: String): Boolean {
     }
 
     return withContext(Dispatchers.IO) {
-        val connection = runCatching {
+        val data: ByteArray
+        runCatching {
             val url = URL("${Cavern.host}/login.php")
             url.openConnection() as HttpURLConnection
-        }.getOrThrow()
-
-        connection.instanceFollowRedirects = false
-        connection.requestMethod = "POST"
-        val data = "username=$username&password=$password".toByteArray()
-        connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded")
-        connection.addRequestProperty("Content-Length", data.size.toString())
-        connection.doOutput = true
-
-        connection.runCatching {
+        }.getOrElse {
+            return@withContext false
+        }.apply {
+            instanceFollowRedirects = false
+            requestMethod = "POST"
+            data = "username=$username&password=$password".toByteArray()
+            addRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            addRequestProperty("Content-Length", data.size.toString())
+            doOutput = true
+        }.runCatching {
             outputStream.write(data)
-
+            this
+        }.getOrElse {
+            return@withContext false
+        }.runCatching {
             if (responseCode == 302) {
                 val location = getHeaderField("location")
                 location?.contains("ok") ?: false
             } else {
                 false
             }
-        }.getOrThrow()
+        }.getOrElse { false }
     }
 }
