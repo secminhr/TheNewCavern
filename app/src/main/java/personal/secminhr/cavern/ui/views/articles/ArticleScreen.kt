@@ -51,7 +51,7 @@ open class ArticleScreen: Screen {
         if (MainActivity.currentAccount != null) {
             Column(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.End) {
                 ExtendedFloatingActionButton(text = { Text("New Article", color = Color.White) },
-                                            onClick = { navigateTo(editorScreen) },
+                                            onClick = { navigateTo(editorScreen()) },
                                             backgroundColor = purple500,
                                             icon = { Icon(Icons.Default.Add, "Add", tint = Color.White) })
             }

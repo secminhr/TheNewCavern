@@ -1,5 +1,6 @@
 package stoneapp.secminhr.cavern.api.requests
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import stoneapp.secminhr.cavern.api.Cavern
@@ -8,7 +9,7 @@ import stoneapp.secminhr.cavern.cavernService.XSRfHeader
 import java.net.HttpURLConnection
 import java.net.URL
 
-suspend fun PublishArticle(title: String, content: String): Boolean = withContext(Dispatchers.IO) {
+suspend fun SendArticle(pid: Int = -1, title: String, content: String): Boolean = withContext(Dispatchers.IO) {
     val data: ByteArray
     runCatching {
         val url = URL("${Cavern.host}/post.php")
@@ -19,7 +20,8 @@ suspend fun PublishArticle(title: String, content: String): Boolean = withContex
         val header = XSRfHeader(XSRFTokenGenerator.token)
 
         requestMethod = "POST"
-        data = "title=$title&content=$content&pid=-1".toByteArray()
+        instanceFollowRedirects = false
+        data = "title=$title&content=$content&pid=$pid".toByteArray()
         addRequestProperty("Content-Type", "application/x-www-form-urlencoded")
         addRequestProperty("Content-Length", data.size.toString())
         setRequestProperty(header.first, header.second)
@@ -30,6 +32,7 @@ suspend fun PublishArticle(title: String, content: String): Boolean = withContex
     }.getOrElse {
         return@withContext false
     }.run {
-        responseCode == HttpURLConnection.HTTP_CREATED
+        Log.e("SendArticle", "respondeCode: $responseCode")
+        responseCode == if(pid == -1) HttpURLConnection.HTTP_CREATED else HttpURLConnection.HTTP_OK
     }
 }

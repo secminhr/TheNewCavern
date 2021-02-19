@@ -74,7 +74,7 @@ class MainActivity : FragmentActivity() {
 
         val articleScreen = ArticleScreen()
         fun articleContentScreen(preview: ArticlePreview) = ArticleContentScreen(preview)
-        val editorScreen = EditorScreen()
+        fun editorScreen(title: String? = null, content: String? = null, id: Int? = null) = EditorScreen(title, content, id)
         val loginScreen = LoginScreen()
     }
 }

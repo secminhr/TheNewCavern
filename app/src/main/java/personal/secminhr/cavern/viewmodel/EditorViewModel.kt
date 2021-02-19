@@ -12,6 +12,7 @@ import androidx.datastore.preferences.createDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import stoneapp.secminhr.cavern.cavernTool.CavernViewModel
@@ -43,10 +44,14 @@ class EditorViewModel(context: Context): CavernViewModel() {
         return content
     }
 
+    private fun clearAndSave() {
+        clear()
+        save()
+    }
+
     private fun clear() {
         title.value = ""
         content.value = TextFieldValue()
-        save()
     }
 
     fun save() {
@@ -66,7 +71,18 @@ class EditorViewModel(context: Context): CavernViewModel() {
             val result = cavernApi.publishArticle(title.value, content.value.text)
             sendingState.value = if (result) SendState.Success else SendState.Failed
             if (result) {
-                clear()
+                clearAndSave()
+                onSuccess()
+            }
+        }
+    }
+
+    fun edit(pid: Int, title: String, content: String, onSuccess: () -> Unit = {}) {
+        sendingState.value = SendState.Sending
+        viewModelScope.launch(Dispatchers.IO) {
+            val success = cavernApi.editArticle(pid, title, content)
+            sendingState.value = if (success) SendState.Success else SendState.Failed
+            if (success) {
                 onSuccess()
             }
         }

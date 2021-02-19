@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import personal.secminhr.cavern.ui.style.purple500
@@ -21,19 +22,22 @@ import personal.secminhr.cavern.ui.views.Screen
 import personal.secminhr.cavern.ui.views.markdown.MarkdownView
 import personal.secminhr.cavern.viewmodel.EditorViewModel
 
-class EditorScreen: Screen {
+class EditorScreen(useTitle: String? = null, useContent: String? = null, val id: Int? = null): Screen {
     private val saved = mutableStateOf(true)
     private val showLeavingAlert = mutableStateOf(false)
     private lateinit var editorViewModel: EditorViewModel
     private val isContentError = mutableStateOf(false)
+    private val inEditArticleMode = (useTitle != null)
+    lateinit var title: MutableState<String>
+    lateinit var articleContent: MutableState<TextFieldValue>
 
     override val content = @Composable {
         editorViewModel = viewModel(factory = EditorViewModel.factory(LocalContext.current))
         val currentTabIndex = remember { mutableStateOf(0) }
-        val title = remember { editorViewModel.getTitle() }
-        val articleContent = remember { editorViewModel.getContent() }
+        title = remember { if (!inEditArticleMode) editorViewModel.getTitle() else mutableStateOf(useTitle!!) }
+        articleContent = remember{ if (!inEditArticleMode) editorViewModel.getContent() else mutableStateOf(TextFieldValue(text=useContent!!)) }
 
-        if (showLeavingAlert.value) {
+        if (showLeavingAlert.value && !inEditArticleMode) {
             AlertDialog(onDismissRequest = {},
                         title = { Text("Saving?") },
                         text = { Text("Your draft hasn't been saved.\nDo you want to save it?") },
@@ -103,6 +107,11 @@ class EditorScreen: Screen {
         Icon(Icons.Default.Save, "Save")
     }
 
+    private fun saveAction() {
+        editorViewModel.save()
+        saved.value = true
+    }
+
     val sendIcon = @Composable {
         val viewModel = viewModel<EditorViewModel>(factory = EditorViewModel.factory(LocalContext.current))
         if (viewModel.sendingState.value == EditorViewModel.SendState.Sending) {
@@ -112,25 +121,36 @@ class EditorScreen: Screen {
         }
     }
 
-    override val topBarIcons = listOf(saveIcon, sendIcon)
-    override val topBarIconActions = listOf(
-        {
-            editorViewModel.save()
-            saved.value = true
-        },
-        {
-            editorViewModel.save()
-            if (editorViewModel.getContent().value.text.isNotEmpty()) {
-                editorViewModel.send {
-                    saved.value = true
-                    backToPreviousScreen()
-                }
-                isContentError.value = false
-            } else {
-                isContentError.value = true
+    private fun sendAction() {
+        editorViewModel.save()
+        if (editorViewModel.getContent().value.text.isNotEmpty()) {
+            editorViewModel.send {
+                saved.value = true
+                backToPreviousScreen()
             }
+            isContentError.value = false
+        } else {
+            isContentError.value = true
         }
-    )
+    }
+
+    private fun editAction() {
+        if (articleContent.value.text.isNotEmpty()) {
+            editorViewModel.edit(id!!, title.value, articleContent.value.text) {
+                saved.value = true
+                backToPreviousScreen()
+            }
+            isContentError.value = false
+        } else {
+            isContentError.value = true
+        }
+    }
+
+    override val topBarIcons = if (!inEditArticleMode) listOf(saveIcon, sendIcon) else listOf(sendIcon)
+    override val topBarIconActions =
+        if (!inEditArticleMode) listOf(::saveAction, ::sendAction)
+        else listOf(::editAction)
+
     override val shouldShowBackButton = true
     override val topBarTitle: MutableState<String> = mutableStateOf("Cavern")
 
