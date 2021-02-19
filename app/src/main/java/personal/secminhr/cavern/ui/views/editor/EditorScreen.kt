@@ -42,7 +42,7 @@ class EditorScreen(useTitle: String? = null, useContent: String? = null, val id:
                         title = { Text("Saving?") },
                         text = { Text("Your draft hasn't been saved.\nDo you want to save it?") },
                         confirmButton = {
-                            TextButton(onClick = {
+                            Button(onClick = {
                                 editorViewModel.save()
                                 saved.value = true
                                 showLeavingAlert.value = false

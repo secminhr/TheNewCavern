@@ -1,8 +1,10 @@
 package personal.secminhr.cavern.ui.views.articleContent
 
 import android.widget.Toast
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Edit
@@ -24,6 +26,7 @@ class ArticleContentScreen(preview: ArticlePreview): Screen {
 
     lateinit var viewModel: ArticleContentViewModel
     lateinit var article: State<Article>
+    private val showDeleteAlert = mutableStateOf(false)
 
     @ExperimentalMaterialApi
     override val content = @Composable {
@@ -39,6 +42,14 @@ class ArticleContentScreen(preview: ArticlePreview): Screen {
                 comments = viewModel.getComments(preview) { mainActivity.showToast(it.message!!, Toast.LENGTH_SHORT) }
             }
         )
+        if (showDeleteAlert.value) {
+            AlertDialog(
+                onDismissRequest = { showDeleteAlert.value = false },
+                title = { Text("Delete?")},
+                text = { Text("Delete this post?\nThere is no way to restore after deletion") },
+                confirmButton = { }
+            )
+        }
     }
 
     private val editIcon = @Composable {
@@ -50,6 +61,7 @@ class ArticleContentScreen(preview: ArticlePreview): Screen {
     }
 
     private fun deleteAction(id: Int) {
+        showDeleteAlert.value = true
         viewModel.deleteArticle(id) {
             backToPreviousScreen()
         }

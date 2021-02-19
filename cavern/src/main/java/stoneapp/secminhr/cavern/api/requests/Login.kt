@@ -34,6 +34,12 @@ suspend fun Login(username: String, password: String): Boolean {
         }.getOrElse {
             return@withContext false
         }.runCatching {
+            getHeaderField("Location")?.let {
+                if (it.contains("index.php")) {
+                    //already logged in
+                    return@withContext true
+                }
+            }
             if (responseCode == 302) {
                 val location = getHeaderField("location")
                 location?.contains("ok") ?: false

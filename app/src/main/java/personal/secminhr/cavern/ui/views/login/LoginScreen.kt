@@ -5,7 +5,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.runtime.*
-import androidx.compose.ui.viewinterop.viewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import personal.secminhr.cavern.MainActivity
 import personal.secminhr.cavern.ui.views.Screen
 import personal.secminhr.cavern.viewmodel.LoginViewModel
