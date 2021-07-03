@@ -17,11 +17,19 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import stoneapp.secminhr.cavern.api.Cavern
+import stoneapp.secminhr.cavern.cavernService.CavernCookieStore
+import java.net.CookieHandler
+import java.net.CookieManager
+import java.net.CookiePolicy
+import kotlin.concurrent.thread
 
 class StartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        thread {
+            CookieHandler.setDefault(CookieManager(CavernCookieStore(applicationContext), CookiePolicy.ACCEPT_ALL))
+        }
 
         setContent {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -32,7 +40,6 @@ class StartActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launchWhenStarted {
-            Cavern.initialize(application)
             fetchMappingJson()
             startActivity(Intent(this@StartActivity, MainActivity::class.java))
         }

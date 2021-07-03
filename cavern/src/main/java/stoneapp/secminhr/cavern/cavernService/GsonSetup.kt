@@ -5,7 +5,7 @@ import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 
-val gson: Gson = gsonBuilder().create()
+internal val gson: Gson = gsonBuilder().create()
 
 private fun gsonBuilder(): GsonBuilder {
     return GsonBuilder().registerTypeAdapter(Date::class.java, DateDeserializer)
