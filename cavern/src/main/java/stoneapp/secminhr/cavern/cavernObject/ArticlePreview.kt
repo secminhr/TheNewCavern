@@ -1,15 +1,17 @@
 package stoneapp.secminhr.cavern.cavernObject
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import stoneapp.secminhr.cavern.cavernService.DateSerializer
 import java.util.*
 
-
+@Serializable
 data class ArticlePreview(
     val title: String,
-    @SerializedName("name") val author: String,
-    @SerializedName("author") val authorUsername: String,
-    @SerializedName("time") val date: Date,
-    @SerializedName("likes_count") var upvote: String,
-    @SerializedName("pid") val id: Int,
-    @SerializedName("islike") var liked: Boolean
+    @SerialName("name") val author: String,
+    @SerialName("author") val authorUsername: String,
+    @SerialName("time") @Serializable(with = DateSerializer::class) val date: Date,
+    @SerialName("likes_count") var upvote: String,
+    @SerialName("pid") val id: Int,
+    @SerialName("islike") var liked: Boolean
 )

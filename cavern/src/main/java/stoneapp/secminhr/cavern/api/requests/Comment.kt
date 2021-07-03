@@ -1,15 +1,13 @@
 package stoneapp.secminhr.cavern.api.requests
 
 import android.util.Log
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.*
 import stoneapp.secminhr.cavern.api.Cavern
 import stoneapp.secminhr.cavern.cavernError.NetworkError
 import stoneapp.secminhr.cavern.cavernError.NoConnectionError
 import stoneapp.secminhr.cavern.cavernObject.Comment
-import stoneapp.secminhr.cavern.cavernService.gson
 import java.net.URL
 import java.net.UnknownHostException
 
@@ -26,9 +24,9 @@ internal suspend fun Comments(id: Int): List<Comment> = withContext(Dispatchers.
         }
     }
     response.comments.map {
-        val commentData = gson.fromJson(it, CommentData::class.java)
-        val nickname = response.names.asJsonObject[commentData.username].asString
-        val hash = response.hash.asJsonObject[commentData.username].asString
+        val commentData = Json.decodeFromJsonElement<CommentData>(it)
+        val nickname = response.names.jsonObject[commentData.username]?.jsonPrimitive?.content ?: ""
+        val hash = response.hash.jsonObject[commentData.username]?.jsonPrimitive?.content ?: ""
         Comment(commentData.id, commentData.username, nickname, commentData.markdown,
             "https://www.gravatar.com/avatar/$hash?d=https%3A%2F%2Ftocas-ui.com%2Fassets%2Fimg%2F5e5e3a6.png&s=500")
     }
@@ -57,11 +55,11 @@ internal suspend fun EditComment(id: Int, content: String): Boolean = withContex
         doInput = true
     }.runCatching {
         outputStream.write(data)
-        inputStream.inputAsJson()
+        inputStream.inputAs<JsonObject>()
     }.getOrElse {
         return@withContext false
     }.run {
-        this["status"].asBoolean
+        this["status"]?.jsonPrimitive?.boolean ?: false
     }
 }
 
@@ -82,10 +80,10 @@ internal suspend fun SendComment(pid: Int, content: String): Boolean = withConte
         doInput = true
     }.runCatching {
         outputStream.write(data)
-        inputStream.inputAsJson()
+        inputStream.inputAs<JsonObject>()
     }.getOrElse {
         return@withContext false
     }.run {
-        this["status"].asBoolean
+        this["status"]?.jsonPrimitive?.boolean ?: false
     }
 }

@@ -6,36 +6,35 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.*
 import stoneapp.secminhr.cavern.api.Cavern
 import stoneapp.secminhr.cavern.cavernError.NetworkError
 import stoneapp.secminhr.cavern.cavernError.NoConnectionError
 import stoneapp.secminhr.cavern.cavernObject.Article
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
-import stoneapp.secminhr.cavern.cavernService.gson
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.UnknownHostException
+import java.util.*
 
 internal suspend fun Articles(pageLimit: Int): Flow<Pair<Int, List<ArticlePreview>>> = flow {
     var counter = 1
     while (true) {
-        val list = mutableListOf<ArticlePreview>()
-        runCatching {
+        val list = runCatching {
             val url = URL("${Cavern.host}/ajax/posts.php?page=$counter&limit=$pageLimit")
-            url.openStream().inputAsJson()
+            url.openStream().inputAs<JsonObject>()
         }.getOrElse {
             throw when (it) {
                 is UnknownHostException -> NoConnectionError()
                 else -> NetworkError()
             }
         }.run {
-            list.addAll(gson.fromJson(
-                getAsJsonArray("posts"),
-                Array<ArticlePreview>::class.java
-            ))
+            this["posts"]?.let {
+                Json.decodeFromJsonElement<Array<ArticlePreview>>(it)
+            }.toList()
         }
 
-        if (list.size <= 0) {
+        if (list.isEmpty()) {
             counter = 1
             continue
         }
@@ -45,17 +44,27 @@ internal suspend fun Articles(pageLimit: Int): Flow<Pair<Int, List<ArticlePrevie
     }
 }.flowOn(Dispatchers.IO)
 
+private fun <T> Array<T>?.toList(): List<T> {
+    if (this == null) {
+        return emptyList()
+    }
+    val list = mutableListOf<T>()
+    list.addAll(this)
+    return list
+
+}
+
 internal suspend fun ArticleContent(preview: ArticlePreview): Article = withContext(Dispatchers.IO) {
     runCatching {
         val url = URL("${Cavern.host}/ajax/posts.php?pid=${preview.id}")
-        url.openStream().inputAsJson()
+        url.openStream().inputAs<JsonObject>()
     }.getOrElse {
         throw when(it) {
             is UnknownHostException -> NoConnectionError()
             else -> NetworkError()
         }
     }.run {
-        val content = getAsJsonObject("post")["content"].asString
+        val content = this["post"]?.jsonObject?.get("content")?.jsonPrimitive?.content ?: ""
         Article(preview, content)
     }
 }
@@ -108,7 +117,7 @@ internal suspend fun LikeArticle(id: Int): Boolean = withContext(Dispatchers.IO)
     }.runCatching {
         doOutput = true
         doInput = true
-        this.getInputStream().inputAsJson()
+        this.inputStream.inputAs<JsonObject>()
     }.onFailure {
         return@withContext false
     }
