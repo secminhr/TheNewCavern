@@ -2,12 +2,12 @@ package personal.secminhr.cavern
 
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.setContent
 import androidx.fragment.app.FragmentActivity
 import personal.secminhr.cavern.ui.views.AppBar
 import personal.secminhr.cavern.ui.views.MainActivityView

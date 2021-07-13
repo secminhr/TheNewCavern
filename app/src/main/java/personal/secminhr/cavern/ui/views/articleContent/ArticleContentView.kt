@@ -1,16 +1,15 @@
 package personal.secminhr.cavern.ui.views.articleContent
 
-import androidx.compose.foundation.InteractionState
-import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.runtime.*
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -41,12 +40,13 @@ fun ArticleContentView(
                     )
             )
 
-    val bottomSheetUsername = mutableStateOf(preview.authorUsername)
+    val bottomSheetUsername = remember { mutableStateOf(preview.authorUsername) }
     BottomSheetScaffold(sheetContent = {
         UserView(bottomSheetUsername)
     }, scaffoldState = bottomSheetScaffoldState, sheetPeekHeight = 0.dp) {
         val state = rememberScrollState()
-        ScrollableColumn(scrollState = state, horizontalAlignment = Alignment.CenterHorizontally) {
+        val scope = rememberCoroutineScope()
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.verticalScroll(state)) {
 
             if (state.value > 0) {
                 titleState.value = preview.title
@@ -57,7 +57,9 @@ fun ArticleContentView(
             val viewModel = viewModel<ArticleContentViewModel>()
             ArticleInfo(article.value, preview, likeState.value, onAuthorClicked = {
                 bottomSheetUsername.value = article.value.authorUsername
-                bottomSheetScaffoldState.bottomSheetState.expand()
+                scope.launch {
+                    bottomSheetScaffoldState.bottomSheetState.expand()
+                }
             }, onLikeClicked = {
                 likeState.value = !likeState.value
                 viewModel.likeArticle(preview.id) { success ->
@@ -80,7 +82,9 @@ fun ArticleContentView(
             comments.value.forEach {
                 Comment(comment = it, onUserLinkClicked = {
                     bottomSheetUsername.value = it
-                    bottomSheetScaffoldState.bottomSheetState.expand()
+                    scope.launch {
+                        bottomSheetScaffoldState.bottomSheetState.expand()
+                    }
                 }, replyClicked = {
                     comment.value += "@${it.commenterUsername} "
                 })
@@ -89,19 +93,19 @@ fun ArticleContentView(
             if (MainActivity.hasCurrentUser) {
                 Divider()
                 val scrollScope = rememberCoroutineScope()
-                val interactionState = remember { InteractionState() }
+                val interactionSource = remember { MutableInteractionSource() }
                 val viewModel = viewModel<ArticleContentViewModel>()
                 OutlinedTextField(
                     value = comment.value,
                     onValueChange = {
                         comment.value = it
                         scrollScope.launch {
-                            state.smoothScrollTo(state.maxValue)
+                            state.animateScrollTo(state.maxValue)
                         }
                     },
                     label = { Text("Your new comment") },
                      modifier = Modifier.padding(16.dp),
-                    interactionState = interactionState,
+                    interactionSource = interactionSource,
                     trailingIcon = {
                         IconButton(onClick = {
                             viewModel.sendComment(preview.id, comment.value) {

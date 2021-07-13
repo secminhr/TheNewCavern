@@ -1,12 +1,13 @@
 package personal.secminhr.cavern.ui.views.login
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedTextField
@@ -18,7 +19,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.loadVectorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -28,7 +29,7 @@ import personal.secminhr.cavern.R
 
 @Composable
 fun LoginView(isCredentialWrong: Boolean, isLogging: Boolean, loginClicked: (String, String) -> Unit) {
-    val logo = loadVectorResource(id = R.drawable.logo_img)
+    val logo = painterResource(id = R.drawable.logo_img)
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -36,31 +37,34 @@ fun LoginView(isCredentialWrong: Boolean, isLogging: Boolean, loginClicked: (Str
     val passwordFocus = FocusRequester()
     val focusManager = LocalFocusManager.current
     val state = rememberScrollState()
-    ScrollableColumn(scrollState = state, modifier = Modifier.padding(16.dp)) {
-        if (logo.resource.resource != null) {
-            Image(logo.resource.resource!!, "logo",
-                    modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally).padding(bottom = 8.dp),
-            contentScale = ContentScale.FillWidth)
-        }
-
+    Column(modifier = Modifier
+        .padding(16.dp)
+        .verticalScroll(state)) {
+        Image(painter = logo, "logo",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 8.dp),
+                contentScale = ContentScale.FillWidth)
         val scope = rememberCoroutineScope()
         OutlinedTextField(username,
                           onValueChange = {
                               scope.launch {
-                                  state.smoothScrollTo(state.maxValue)
+                                  state.animateScrollTo(state.maxValue)
                               }
                               username = it
                           },
                           label = { Text("Username") },
                           keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                           keyboardActions = KeyboardActions(onNext = { passwordFocus.requestFocus() }),
-                          isErrorValue = isCredentialWrong,
-                          modifier = Modifier.align(Alignment.CenterHorizontally)
-                                             .padding(bottom = 8.dp))
+                          isError = isCredentialWrong,
+                          modifier = Modifier
+                              .align(Alignment.CenterHorizontally)
+                              .padding(bottom = 8.dp))
         OutlinedTextField(value = password,
                             onValueChange = {
                                 scope.launch {
-                                    state.smoothScrollTo(state.maxValue)
+                                    state.animateScrollTo(state.maxValue)
                                 }
                                 password = it
                             },
@@ -71,10 +75,11 @@ fun LoginView(isCredentialWrong: Boolean, isLogging: Boolean, loginClicked: (Str
                                 focusManager.clearFocus()
                             }),
                             visualTransformation = PasswordVisualTransformation(),
-                            isErrorValue = isCredentialWrong,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                                        .padding(bottom = 16.dp)
-                                        .focusRequester(passwordFocus))
+                            isError = isCredentialWrong,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(bottom = 16.dp)
+                                .focusRequester(passwordFocus))
 
         if (isLogging) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))

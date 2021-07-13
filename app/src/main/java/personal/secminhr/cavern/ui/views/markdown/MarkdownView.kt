@@ -38,7 +38,7 @@ fun MarkdownView(text: String, modifier: Modifier = Modifier, onUserLinkClicked:
 
     lateinit var markdown: String
 
-    AndroidView(viewBlock = {
+    AndroidView(factory = {
         WebView(it).apply {
             settings.javaScriptEnabled = true
             markdown = markdownRenderHTML.replace("{{markdown_replace}}", text)

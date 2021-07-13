@@ -1,5 +1,6 @@
 package stoneapp.secminhr.cavern.api
 
+import kotlinx.serialization.json.Json
 import stoneapp.secminhr.cavern.api.requests.*
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 
@@ -27,5 +28,8 @@ class Cavern {
         }
 
         internal const val host = "https://stoneapp.tech/cavern"
+        internal val json = Json {
+            ignoreUnknownKeys = true
+        }
     }
 }

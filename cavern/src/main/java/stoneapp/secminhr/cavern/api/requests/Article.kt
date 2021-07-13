@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
 import stoneapp.secminhr.cavern.api.Cavern
+import stoneapp.secminhr.cavern.api.Cavern.Companion.json
 import stoneapp.secminhr.cavern.cavernError.NetworkError
 import stoneapp.secminhr.cavern.cavernError.NoConnectionError
 import stoneapp.secminhr.cavern.cavernObject.Article
@@ -30,7 +31,7 @@ internal suspend fun Articles(pageLimit: Int): Flow<Pair<Int, List<ArticlePrevie
             }
         }.run {
             this["posts"]?.let {
-                Json.decodeFromJsonElement<Array<ArticlePreview>>(it)
+                json.decodeFromJsonElement<Array<ArticlePreview>>(it)
             }.toList()
         }
 

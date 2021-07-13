@@ -3,8 +3,10 @@ package stoneapp.secminhr.cavern.api.requests
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
 import stoneapp.secminhr.cavern.api.Cavern
+import stoneapp.secminhr.cavern.api.Cavern.Companion.json
 import stoneapp.secminhr.cavern.cavernError.NetworkError
 import stoneapp.secminhr.cavern.cavernError.NoConnectionError
 import stoneapp.secminhr.cavern.cavernObject.Comment
@@ -24,7 +26,7 @@ internal suspend fun Comments(id: Int): List<Comment> = withContext(Dispatchers.
         }
     }
     response.comments.map {
-        val commentData = Json.decodeFromJsonElement<CommentData>(it)
+        val commentData = json.decodeFromJsonElement<CommentData>(it)
         val nickname = response.names.jsonObject[commentData.username]?.jsonPrimitive?.content ?: ""
         val hash = response.hash.jsonObject[commentData.username]?.jsonPrimitive?.content ?: ""
         Comment(commentData.id, commentData.username, nickname, commentData.markdown,
@@ -32,7 +34,9 @@ internal suspend fun Comments(id: Int): List<Comment> = withContext(Dispatchers.
     }
 }
 
+@Serializable
 private data class CommentResponse(val comments: JsonArray, val names: JsonElement, val hash: JsonElement)
+@Serializable
 private data class CommentData(
     val id: String,
     val username: String,

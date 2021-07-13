@@ -15,7 +15,7 @@ class UserInfoViewModel: CavernViewModel() {
 
         viewModelScope.launch {
             try {
-                account.value = cavernApi.getAuthor(username)
+                account.value = cavernApi.getUserInfo(username)
             } catch (e: CavernError) {
                 onError(e)
             }
