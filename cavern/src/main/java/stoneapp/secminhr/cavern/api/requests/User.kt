@@ -3,6 +3,7 @@ package stoneapp.secminhr.cavern.api.requests
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import stoneapp.secminhr.cavern.api.Cavern
 import stoneapp.secminhr.cavern.cavernError.NetworkError
 import stoneapp.secminhr.cavern.cavernError.NoConnectionError
@@ -24,32 +25,42 @@ internal suspend fun Login(username: String, password: String): Boolean {
             url.openConnectionXSRF()
         }.getOrElse {
             return@withContext false
-        }.apply {
-            instanceFollowRedirects = false
-            requestMethod = "POST"
+        }.also {
+            it.instanceFollowRedirects = false
+            it.requestMethod = "POST"
+            it.doOutput = true
+            it.doInput = true
             data = "username=$username&password=$password".toByteArray()
-            addRequestProperty("Content-Type", "application/x-www-form-urlencoded")
-            addRequestProperty("Content-Length", data.size.toString())
-            doOutput = true
+            it.addRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            it.setFixedLengthStreamingMode(data.size)
         }.runCatching {
             outputStream.write(data)
             this
         }.getOrElse {
             return@withContext false
         }.runCatching {
-            getHeaderField("Location")?.let {
-                if (it.contains("index.php")) {
-                    //already logged in
-                    return@withContext true
+            try {
+                getHeaderField("Location")?.let {
+                    if (it.contains("ok")) {
+                        //already logged in
+                        return@withContext true
+                    } else if (it.contains("err")) {
+                        return@withContext false
+                    }
                 }
+                if (responseCode == 302) {
+                    val location = getHeaderField("location")
+                    location?.contains("ok") ?: false
+                } else {
+                    false
+                }
+            } catch (e: Exception) {
+                return@withContext false
             }
-            if (responseCode == 302) {
-                val location = getHeaderField("location")
-                location?.contains("ok") ?: false
-            } else {
-                false
-            }
-        }.getOrElse { false }
+            false
+        }.getOrElse {
+            false
+        }
     }
 }
 
@@ -107,6 +118,7 @@ private suspend fun RoleDetail(level: Int): Role = withContext(Dispatchers.IO) {
     }
 }
 
+@Serializable
 private data class AccountData(
     val username: String,
     @SerialName("name") val nickname: String,
