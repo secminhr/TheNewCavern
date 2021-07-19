@@ -16,7 +16,7 @@
             android:name="io.sentry.dsn"
             android:value="https://61c4247b79a24648aa42828a8d85e075@o474726.ingest.sentry.io/5511457" />
         <activity
-            android:name=".StartActivity"
+            android:name=".start.StartActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.Cavern.NoActionBar">
             <intent-filter>
@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".main.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.Cavern.NoActionBar"
             android:windowSoftInputMode="adjustResize">
