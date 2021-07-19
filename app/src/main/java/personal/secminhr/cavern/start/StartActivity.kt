@@ -91,7 +91,7 @@ class StartActivity : AppCompatActivity() {
                     onClick = {
                         showUpdateDialog = false
                         val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse("https://github.com/stoneapptech/Cavern-Android/releases/latest")
+                        intent.data = Uri.parse("https://github.com/secminhr/TheNewCavern/releases/latest")
                         startActivity(intent)
                     }
                 ) {
@@ -129,7 +129,7 @@ class StartActivity : AppCompatActivity() {
                     onClick = {
                         showUpdateDialog = false
                         val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse("https://github.com/stoneapptech/Cavern-Android/releases/latest")
+                        intent.data = Uri.parse("https://github.com/secminhr/TheNewCavern/releases/latest")
                         startActivity(intent)
                     }
                 ) {
