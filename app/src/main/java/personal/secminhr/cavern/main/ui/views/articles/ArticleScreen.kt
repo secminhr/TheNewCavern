@@ -6,10 +6,7 @@ import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
@@ -23,10 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
+import personal.secminhr.cavern.main.MainActivity
 import personal.secminhr.cavern.main.MainActivity.Companion.articleContentScreen
 import personal.secminhr.cavern.main.MainActivity.Companion.editorScreen
 import personal.secminhr.cavern.main.MainActivity.Companion.loginScreen
-import personal.secminhr.cavern.main.MainActivity
 import personal.secminhr.cavern.main.mainActivity
 import personal.secminhr.cavern.main.ui.style.purple500
 import personal.secminhr.cavern.main.ui.views.Screen
@@ -49,7 +46,9 @@ open class ArticleScreen: Screen {
                 }
         )
         if (MainActivity.currentAccount != null) {
-            Column(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.End) {
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.End) {
                 ExtendedFloatingActionButton(text = { Text("New Article", color = Color.White) },
                                             onClick = { navigateTo(editorScreen()) },
                                             backgroundColor = purple500,
@@ -58,7 +57,14 @@ open class ArticleScreen: Screen {
         }
     }
 
-    private val userIcon = @Composable {
+    override val topBarIcons: @Composable RowScope.() -> Unit = {
+        IconButton(onClick = { navigateTo(loginScreen) }) {
+            UserIcon()
+        }
+    }
+
+    @Composable
+    fun UserIcon() {
         if (MainActivity.currentAccount != null) {
             val image = MainActivity.currentAccount!!.avatarLink
             val imageView = ImageView(LocalContext.current)
@@ -66,20 +72,13 @@ open class ArticleScreen: Screen {
                 .asDrawable()
                 .load(image)
                 .into(imageView)
-            AndroidView({ imageView }, modifier = Modifier.clip(CircleShape).size(24.dp))
-
+            AndroidView({ imageView }, modifier = Modifier
+                .clip(CircleShape)
+                .size(24.dp))
         } else {
             Icon(Icons.Default.AccountCircle, null)
         }
     }
 
-    override val topBarIcons: List<@Composable () -> Unit>
-        get() {
-            return listOf(userIcon)
-        }
-
-    override val topBarIconActions: List<() -> Unit> = listOf(
-        { navigateTo(loginScreen) }
-    )
     override val shouldShowBackButton = false
 }

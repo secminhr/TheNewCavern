@@ -46,8 +46,7 @@ class MainActivity : FragmentActivity() {
                 AppBar(icons = screenHistory.currentScreen.value!!.topBarIcons,
                         title = screenHistory.currentScreen.value!!.topBarTitle,
                         showBackButton = screenHistory.currentScreen.value!!.shouldShowBackButton,
-                        backAction = ::onBackPressed,
-                        iconActions = screenHistory.currentScreen.value!!.topBarIconActions)
+                        backAction = ::onBackPressed)
                 MainActivityView(screenHistory.currentScreen.value!!)
             }
         }

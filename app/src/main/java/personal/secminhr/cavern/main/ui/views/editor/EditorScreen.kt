@@ -1,6 +1,7 @@
 package personal.secminhr.cavern.main.ui.views.editor
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -103,16 +104,13 @@ class EditorScreen(useTitle: String? = null, useContent: String? = null, val id:
         }
     }
 
-    val saveIcon = @Composable {
-        Icon(Icons.Default.Save, "Save")
-    }
-
-    private fun saveAction() {
+    private fun save() {
         editorViewModel.save()
         saved.value = true
     }
 
-    val sendIcon = @Composable {
+    @Composable
+    fun SendIcon() {
         val viewModel = viewModel<EditorViewModel>(factory = EditorViewModel.factory(LocalContext.current))
         if (viewModel.sendingState.value == EditorViewModel.SendState.Sending) {
             CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp), strokeWidth = 3.dp)
@@ -121,7 +119,7 @@ class EditorScreen(useTitle: String? = null, useContent: String? = null, val id:
         }
     }
 
-    private fun sendAction() {
+    private fun send() {
         editorViewModel.save()
         if (editorViewModel.getContent().value.text.isNotEmpty()) {
             editorViewModel.send {
@@ -134,7 +132,7 @@ class EditorScreen(useTitle: String? = null, useContent: String? = null, val id:
         }
     }
 
-    private fun editAction() {
+    private fun edit() {
         if (articleContent.value.text.isNotEmpty()) {
             editorViewModel.edit(id!!, title.value, articleContent.value.text) {
                 saved.value = true
@@ -146,10 +144,22 @@ class EditorScreen(useTitle: String? = null, useContent: String? = null, val id:
         }
     }
 
-    override val topBarIcons = if (!inEditArticleMode) listOf(saveIcon, sendIcon) else listOf(sendIcon)
-    override val topBarIconActions =
-        if (!inEditArticleMode) listOf(::saveAction, ::sendAction)
-        else listOf(::editAction)
+    override val topBarIcons: @Composable RowScope.() -> Unit = {
+        if (!inEditArticleMode) {
+            IconButton(onClick = { save() }) {
+                Icon(Icons.Default.Save, "Save")
+            }
+        }
+        IconButton(onClick = {
+            if (!inEditArticleMode) {
+                send()
+            } else {
+                edit()
+            }
+        }) {
+            SendIcon()
+        }
+    }
 
     override val shouldShowBackButton = true
     override val topBarTitle: MutableState<String> = mutableStateOf("Cavern")

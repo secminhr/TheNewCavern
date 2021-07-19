@@ -1,7 +1,9 @@
 package personal.secminhr.cavern.main.ui.views.login
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.runtime.*
@@ -37,13 +39,11 @@ class LoginScreen: Screen {
         }
     }
 
-    val icon = @Composable {
-        Icon(Icons.Default.Article, "Article")
+    override val topBarIcons: @Composable RowScope.() -> Unit = {
+        IconButton(onClick = { backToPreviousScreen() }) {
+            Icon(Icons.Default.Article, "Article")
+        }
     }
 
-    override val topBarIcons = listOf(icon)
-    override val topBarIconActions = listOf(
-        { backToPreviousScreen() }
-    )
     override val shouldShowBackButton = false
 }

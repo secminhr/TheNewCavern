@@ -2,6 +2,7 @@ package personal.secminhr.cavern.main.ui.views
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -20,11 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun AppBar(icons: List<@Composable () -> Unit>,
+fun AppBar(icons: @Composable RowScope.() -> Unit,
            title: MutableState<String>,
            showBackButton: Boolean = false,
-           backAction: () -> Unit = {},
-           iconActions: List<() -> Unit> = listOf()) {
+           backAction: () -> Unit = {}) {
     TopAppBar {
         Row(modifier = Modifier.align(Alignment.CenterVertically).weight(1.0f)) {
             if(showBackButton) {
@@ -42,11 +42,12 @@ fun AppBar(icons: List<@Composable () -> Unit>,
                 )
             }
         }
-        for (i in icons.indices) {
-            IconButton(onClick = { iconActions.getOrNull(i)?.invoke() }, modifier = Modifier.align(Alignment.CenterVertically)) {
-                icons[i]()
-            }
-        }
+        icons(this)
+//        for (i in icons.indices) {
+//            IconButton(onClick = { iconActions.getOrNull(i)?.invoke() }, modifier = Modifier.align(Alignment.CenterVertically)) {
+//                icons[i]()
+//            }
+//        }
     }
 }
 

@@ -1,6 +1,7 @@
 package personal.secminhr.cavern.main.ui.views.articleContent
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -68,34 +69,25 @@ class ArticleContentScreen(preview: ArticlePreview): Screen {
         }
     }
 
-    private val editIcon = @Composable {
-        Icon(Icons.Default.Edit, "Edit")
-    }
-
-    private val deleteIcon = @Composable {
-        Icon(Icons.Default.DeleteForever, "Delete")
-    }
-
-    private fun deleteAction() {
+    private fun delete() {
         showDeleteAlert.value = true
     }
 
-    private fun editAction(id: Int) {
+    private fun edit(id: Int) {
         navigateTo(editorScreen(article.value.title, article.value.content, id))
     }
 
-    override val topBarIcons: List<@Composable () -> Unit> =
+    override val topBarIcons: @Composable RowScope.() -> Unit = {
         if (MainActivity.hasCurrentUser && MainActivity.currentAccount!!.username == preview.authorUsername) {
-            listOf(deleteIcon, editIcon, super.sameAppBarIconAs(articleScreen)[0])
-        } else {
-            super.sameAppBarIconAs(articleScreen)
+            IconButton(onClick = { delete() }) {
+                Icon(Icons.Default.DeleteForever, "Delete")
+            }
+            IconButton(onClick = { edit(preview.id) }) {
+                Icon(Icons.Default.Edit, "Edit")
+            }
         }
-
-    override val topBarIconActions: List<() -> Unit> =
-        if (MainActivity.hasCurrentUser && MainActivity.currentAccount!!.username == preview.authorUsername)
-            mutableListOf(::deleteAction, { editAction(preview.id) }) + super.sameAppBarIconActionAs(articleScreen)
-        else
-            super.sameAppBarIconActionAs(articleScreen)
+        super.sameAppBarIconAs(articleScreen)(this)
+    }
 
     override val topBarTitle: MutableState<String> = mutableStateOf("Cavern")
     override val shouldShowBackButton = true
