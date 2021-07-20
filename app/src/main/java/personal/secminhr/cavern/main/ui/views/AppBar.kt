@@ -9,10 +9,8 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -21,18 +19,36 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
+fun AppBar(screen: Screen, backAction: () -> Unit) {
+    AppBar(
+        icons = screen.topBarIcons,
+        title = screen.topBarTitle.value,
+        showBackButton = screen.shouldShowBackButton,
+        backAction
+    )
+}
+
+@Composable
 fun AppBar(icons: @Composable RowScope.() -> Unit,
-           title: MutableState<String>,
+           title: String,
            showBackButton: Boolean = false,
            backAction: () -> Unit = {}) {
     TopAppBar {
-        Row(modifier = Modifier.align(Alignment.CenterVertically).weight(1.0f)) {
+        Row(modifier = Modifier
+            .align(Alignment.CenterVertically)
+            .weight(1.0f)
+        ) {
             if(showBackButton) {
                 IconButton(onClick = backAction) {
                     Icon(Icons.Default.ArrowBack, "Back")
                 }
             }
-            Crossfade(targetState = title.value, modifier = Modifier.align(Alignment.CenterVertically).padding(start = 16.dp)) {
+            Crossfade(
+                targetState = title,
+                modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 16.dp)
+            ) {
                 Text(it,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium,
@@ -43,18 +59,13 @@ fun AppBar(icons: @Composable RowScope.() -> Unit,
             }
         }
         icons(this)
-//        for (i in icons.indices) {
-//            IconButton(onClick = { iconActions.getOrNull(i)?.invoke() }, modifier = Modifier.align(Alignment.CenterVertically)) {
-//                icons[i]()
-//            }
-//        }
     }
 }
 
 
-val DefaultIcon = @Composable {
-    Icon(Icons.Default.AccountCircle, null)
-}
+//val DefaultIcon = @Composable {
+//    Icon(Icons.Default.AccountCircle, null)
+//}
 
 //@Preview(showBackground = true, name = "Not login")
 //@Composable

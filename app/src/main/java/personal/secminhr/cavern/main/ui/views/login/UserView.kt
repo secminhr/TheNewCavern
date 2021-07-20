@@ -1,7 +1,6 @@
 package personal.secminhr.cavern.main.ui.views.login
 
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,17 +22,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import personal.secminhr.cavern.R
 import personal.secminhr.cavern.main.MainActivity
-import personal.secminhr.cavern.main.mainActivity
 import personal.secminhr.cavern.main.viewmodel.LogoutViewModel
 import personal.secminhr.cavern.main.viewmodel.UserInfoViewModel
 
 @Composable
-fun UserView(username: State<String>) {
+fun UserView(username: State<String>, showSnackbar: (String) -> Unit) {
 
     val infoViewModel = viewModel<UserInfoViewModel>()
     val user = remember(username.value) {
         infoViewModel.getAuthorInfo(username.value) {
-            mainActivity.showToast(it.message!!, Toast.LENGTH_SHORT)
+            showSnackbar(it.message!!)
         }
     }
 

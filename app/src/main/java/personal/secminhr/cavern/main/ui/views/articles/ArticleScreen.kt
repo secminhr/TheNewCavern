@@ -2,7 +2,6 @@ package personal.secminhr.cavern.main.ui.views.articles
 
 
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -24,35 +23,35 @@ import personal.secminhr.cavern.main.MainActivity
 import personal.secminhr.cavern.main.MainActivity.Companion.articleContentScreen
 import personal.secminhr.cavern.main.MainActivity.Companion.editorScreen
 import personal.secminhr.cavern.main.MainActivity.Companion.loginScreen
-import personal.secminhr.cavern.main.mainActivity
 import personal.secminhr.cavern.main.ui.style.purple500
 import personal.secminhr.cavern.main.ui.views.Screen
 import personal.secminhr.cavern.main.viewmodel.ArticlesListViewModel
 
 open class ArticleScreen: Screen {
 
-    @ExperimentalFoundationApi
     @ExperimentalMaterialApi
-    override val content = @Composable {
+    @ExperimentalFoundationApi
+    @Composable
+    override fun Content(showSnackbar: (String) -> Unit) {
         val viewModel = viewModel<ArticlesListViewModel>()
-        ArticleList(list = viewModel.getArticlesPreview(onNoConnection = { mainActivity.showToast(it.message!!, Toast.LENGTH_SHORT) },
-                                                        onNetworkError = { mainActivity.showToast(it.message!!, Toast.LENGTH_SHORT) }),
-                state = viewModel.listState!!,
-                onItemClicked = { navigateTo(articleContentScreen(it)) },
-                onLikeClicked = {
-                    if (MainActivity.hasCurrentUser) {
-                        viewModel.likeArticle(it)
-                    }
+        ArticleList(list = viewModel.getArticlesPreview(onNoConnection = { showSnackbar(it.message!!) },
+            onNetworkError = { showSnackbar(it.message!!) }),
+            state = viewModel.listState!!,
+            onItemClicked = { navigateTo(articleContentScreen(it)) },
+            onLikeClicked = {
+                if (MainActivity.hasCurrentUser) {
+                    viewModel.likeArticle(it)
                 }
+            }
         )
         if (MainActivity.currentAccount != null) {
             Column(modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.End) {
                 ExtendedFloatingActionButton(text = { Text("New Article", color = Color.White) },
-                                            onClick = { navigateTo(editorScreen()) },
-                                            backgroundColor = purple500,
-                                            icon = { Icon(Icons.Default.Add, "Add", tint = Color.White) })
+                    onClick = { navigateTo(editorScreen()) },
+                    backgroundColor = purple500,
+                    icon = { Icon(Icons.Default.Add, "Add", tint = Color.White) })
             }
         }
     }

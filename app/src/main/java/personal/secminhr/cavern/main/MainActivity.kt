@@ -21,17 +21,10 @@ import stoneapp.secminhr.cavern.cavernError.SessionExpiredError
 import stoneapp.secminhr.cavern.cavernObject.Account
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 
-lateinit var mainActivity: MainActivity
 class MainActivity : FragmentActivity() {
-
-    init {
-        mainActivity = this
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        screenHistory.changeScreen(articleScreen)
 
         try {
             viewModels<SessionUserViewModel>().value.login {
@@ -43,20 +36,17 @@ class MainActivity : FragmentActivity() {
 
         setContent {
             Column {
-                AppBar(icons = screenHistory.currentScreen.value!!.topBarIcons,
-                        title = screenHistory.currentScreen.value!!.topBarTitle,
-                        showBackButton = screenHistory.currentScreen.value!!.shouldShowBackButton,
-                        backAction = ::onBackPressed)
-                MainActivityView(screenHistory.currentScreen.value!!)
+                AppBar(screen = screenHistory.currentScreen, backAction = ::onBackPressed)
+                MainActivityView(screenHistory.currentScreen)
             }
         }
     }
 
     override fun onBackPressed() {
-        if (screenHistory.currentScreen.value is ArticleScreen) {
+        if (screenHistory.currentScreen is ArticleScreen) {
             super.onBackPressed() //exit
         } else {
-            screenHistory.currentScreen.value?.backToPreviousScreen()
+            screenHistory.currentScreen.backToPreviousScreen()
         }
     }
 
@@ -69,12 +59,13 @@ class MainActivity : FragmentActivity() {
     companion object {
         var currentAccount: Account? by mutableStateOf(null)
         val hasCurrentUser get() = currentAccount != null
-        val screenHistory = ScreenStack()
 
         val articleScreen = ArticleScreen()
         fun articleContentScreen(preview: ArticlePreview) = ArticleContentScreen(preview)
         fun editorScreen(title: String? = null, content: String? = null, id: Int? = null) = EditorScreen(title, content, id)
         val loginScreen = LoginScreen()
+
+        val screenHistory = ScreenStack(articleScreen)
     }
 }
 

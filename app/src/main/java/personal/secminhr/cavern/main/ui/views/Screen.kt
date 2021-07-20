@@ -7,7 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import personal.secminhr.cavern.main.MainActivity.Companion.screenHistory
 
 interface Screen {
-    val content: @Composable () -> Unit
+
+    @Composable
+    fun Content(showSnackbar: (String) -> Unit)
     val topBarIcons: @Composable RowScope.() -> Unit
     val topBarTitle: MutableState<String>
         get() = mutableStateOf("Cavern")

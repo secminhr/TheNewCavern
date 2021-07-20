@@ -14,7 +14,8 @@ import personal.secminhr.cavern.main.viewmodel.LoginViewModel
 
 class LoginScreen: Screen {
 
-    override val content = @Composable {
+    @Composable
+    override fun Content(showSnackbar: (String) -> Unit) {
         var isCredentialWrong: Boolean by remember { mutableStateOf(false) }
         var isLogging: Boolean by remember { mutableStateOf(false) }
         val viewModel: LoginViewModel = viewModel()
@@ -34,7 +35,7 @@ class LoginScreen: Screen {
                 }
             } else {
                 val username = remember(it) { mutableStateOf(it.username) }
-                UserView(username)
+                UserView(username, showSnackbar)
             }
         }
     }

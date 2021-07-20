@@ -30,7 +30,8 @@ fun ArticleContentView(
     preview: ArticlePreview,
     titleState: MutableState<String>,
     comments: MutableState<List<Comment>>,
-    onCommentSend: () -> Unit
+    onCommentSend: () -> Unit,
+    showSnackbar: (String) -> Unit
 ) {
     val likeState = remember { mutableStateOf(preview.liked) }
     val bottomSheetScaffoldState =
@@ -42,7 +43,7 @@ fun ArticleContentView(
 
     val bottomSheetUsername = remember { mutableStateOf(preview.authorUsername) }
     BottomSheetScaffold(sheetContent = {
-        UserView(bottomSheetUsername)
+        UserView(bottomSheetUsername, showSnackbar)
     }, scaffoldState = bottomSheetScaffoldState, sheetPeekHeight = 0.dp) {
         val state = rememberScrollState()
         val scope = rememberCoroutineScope()

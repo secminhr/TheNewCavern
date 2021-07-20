@@ -23,7 +23,7 @@ import personal.secminhr.cavern.main.ui.views.Screen
 import personal.secminhr.cavern.main.ui.views.markdown.MarkdownView
 import personal.secminhr.cavern.main.viewmodel.EditorViewModel
 
-class EditorScreen(useTitle: String? = null, useContent: String? = null, val id: Int? = null): Screen {
+class EditorScreen(val useTitle: String? = null, val useContent: String? = null, val id: Int? = null): Screen {
     private val saved = mutableStateOf(true)
     private val showLeavingAlert = mutableStateOf(false)
     private lateinit var editorViewModel: EditorViewModel
@@ -32,7 +32,8 @@ class EditorScreen(useTitle: String? = null, useContent: String? = null, val id:
     lateinit var title: MutableState<String>
     lateinit var articleContent: MutableState<TextFieldValue>
 
-    override val content = @Composable {
+    @Composable
+    override fun Content(showSnackbar: (String) -> Unit) {
         editorViewModel = viewModel(factory = EditorViewModel.factory(LocalContext.current))
         val currentTabIndex = remember { mutableStateOf(0) }
         title = remember { if (!inEditArticleMode) editorViewModel.getTitle() else mutableStateOf(useTitle!!) }
@@ -40,26 +41,26 @@ class EditorScreen(useTitle: String? = null, useContent: String? = null, val id:
 
         if (showLeavingAlert.value && !inEditArticleMode) {
             AlertDialog(onDismissRequest = {},
-                        title = { Text("Saving?") },
-                        text = { Text("Your draft hasn't been saved.\nDo you want to save it?") },
-                        confirmButton = {
-                            Button(onClick = {
-                                editorViewModel.save()
-                                saved.value = true
-                                showLeavingAlert.value = false
-                                alertFinished()
-                            }) {
-                                Text("Save")
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(onClick = {
-                                showLeavingAlert.value = false
-                                alertFinished()
-                            }) {
-                                Text("No", color = Color.Red)
-                            }
-                        }
+                title = { Text("Saving?") },
+                text = { Text("Your draft hasn't been saved.\nDo you want to save it?") },
+                confirmButton = {
+                    Button(onClick = {
+                        editorViewModel.save()
+                        saved.value = true
+                        showLeavingAlert.value = false
+                        alertFinished()
+                    }) {
+                        Text("Save")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        showLeavingAlert.value = false
+                        alertFinished()
+                    }) {
+                        Text("No", color = Color.Red)
+                    }
+                }
             )
         }
 

@@ -1,6 +1,5 @@
 package personal.secminhr.cavern.main.ui.views.articleContent
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -18,31 +17,32 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import personal.secminhr.cavern.main.MainActivity
 import personal.secminhr.cavern.main.MainActivity.Companion.articleScreen
 import personal.secminhr.cavern.main.MainActivity.Companion.editorScreen
-import personal.secminhr.cavern.main.mainActivity
 import personal.secminhr.cavern.main.ui.views.Screen
 import personal.secminhr.cavern.main.viewmodel.ArticleContentViewModel
 import stoneapp.secminhr.cavern.cavernObject.Article
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 
-class ArticleContentScreen(preview: ArticlePreview): Screen {
+class ArticleContentScreen(val preview: ArticlePreview): Screen {
 
     lateinit var viewModel: ArticleContentViewModel
     lateinit var article: State<Article>
     private val showDeleteAlert = mutableStateOf(false)
 
     @ExperimentalMaterialApi
-    override val content = @Composable {
+    @Composable
+    override fun Content(showSnackbar: (String) -> Unit) {
         viewModel = viewModel()
-        var comments = viewModel.getComments(preview) { mainActivity.showToast(it.message!!, Toast.LENGTH_SHORT) }
-        article = viewModel.getArticleContent(preview) { mainActivity.showToast(it.message!!, Toast.LENGTH_SHORT) }
+        var comments = viewModel.getComments(preview) { showSnackbar(it.message!!) }
+        article = viewModel.getArticleContent(preview) { showSnackbar(it.message!!) }
         ArticleContentView(
             article = article,
             titleState = topBarTitle,
             preview = preview,
             comments = comments,
             onCommentSend = {
-                comments = viewModel.getComments(preview) { mainActivity.showToast(it.message!!, Toast.LENGTH_SHORT) }
-            }
+                comments = viewModel.getComments(preview) { showSnackbar(it.message!!) }
+            },
+            showSnackbar = showSnackbar
         )
         if (showDeleteAlert.value) {
             AlertDialog(
