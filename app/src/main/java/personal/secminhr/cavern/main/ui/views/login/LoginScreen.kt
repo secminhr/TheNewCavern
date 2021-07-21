@@ -8,9 +8,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
-import personal.secminhr.cavern.main.MainActivity
 import personal.secminhr.cavern.main.ui.views.Screen
-import personal.secminhr.cavern.main.viewmodel.LoginViewModel
+import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 
 class LoginScreen: Screen {
 
@@ -18,16 +17,14 @@ class LoginScreen: Screen {
     override fun Content(showSnackbar: (String) -> Unit) {
         var isCredentialWrong: Boolean by remember { mutableStateOf(false) }
         var isLogging: Boolean by remember { mutableStateOf(false) }
-        val viewModel: LoginViewModel = viewModel()
-
-        Crossfade(MainActivity.currentAccount) {
+        val viewModel = viewModel<CurrentUserViewModel>()
+        Crossfade(viewModel.currentUser) {
             if (it == null) {
                 LoginView(isCredentialWrong, isLogging) { username, password ->
                     isLogging = true
-                    viewModel.login(username, password, onFinished = { user ->
+                    viewModel.login(username, password, onFinish = {
                         isCredentialWrong = false
                         isLogging = false
-                        MainActivity.currentAccount = user
                     }, onWrongCredential = {
                         isCredentialWrong = true
                         isLogging = false

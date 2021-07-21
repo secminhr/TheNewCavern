@@ -14,7 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import personal.secminhr.cavern.main.MainActivity
+import androidx.lifecycle.viewmodel.compose.viewModel
+import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,8 +25,9 @@ import java.util.*
 @Composable
 fun ArticlePreviewItem(preview: ArticlePreview, onItemClicked: (ArticlePreview) -> Unit = {}, onLikeClicked: (Int) -> Unit = {}) {
 
-    Box(modifier = Modifier.fillMaxWidth()
-                            .clickable(onClick = { onItemClicked(preview) }, role = Role.Button)
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .clickable(onClick = { onItemClicked(preview) }, role = Role.Button)
     ) {
         InfoColumn(
             preview = preview,
@@ -55,13 +57,14 @@ fun LikeData(preview: ArticlePreview,
              modifier: Modifier,
              onLikeClicked: (Int) -> Unit = {}) {
 
+    val viewModel = viewModel<CurrentUserViewModel>()
     Row(modifier = modifier then Modifier.padding(end = 16.dp)) {
         IconToggleButton(
                 modifier = Modifier.width(48.dp).align(Alignment.CenterVertically),
                 checked = preview.liked,
                 onCheckedChange = {
                     onLikeClicked(preview.id)
-                    if (MainActivity.hasCurrentUser) {
+                    if (viewModel.currentUser != null) {
                         preview.liked = it
                         if (it) {
                             preview.upvote = (preview.upvote.toInt() + 1).toString()

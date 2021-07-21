@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
-import personal.secminhr.cavern.main.MainActivity
 import personal.secminhr.cavern.main.ui.views.login.UserView
 import personal.secminhr.cavern.main.ui.views.markdown.MarkdownView
 import personal.secminhr.cavern.main.viewmodel.ArticleContentViewModel
+import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import stoneapp.secminhr.cavern.cavernObject.Article
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 import stoneapp.secminhr.cavern.cavernObject.Comment
@@ -96,7 +96,8 @@ fun ArticleContentView(
                 })
             }
 
-            if (MainActivity.hasCurrentUser) {
+            val currentUserViewModel = viewModel<CurrentUserViewModel>()
+            if (currentUserViewModel.currentUser != null) {
                 Divider()
                 val scrollScope = rememberCoroutineScope()
                 val interactionSource = remember { MutableInteractionSource() }

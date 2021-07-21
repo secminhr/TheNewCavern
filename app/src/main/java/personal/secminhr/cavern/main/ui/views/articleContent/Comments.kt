@@ -12,17 +12,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import personal.secminhr.cavern.main.MainActivity
+import androidx.lifecycle.viewmodel.compose.viewModel
 import personal.secminhr.cavern.main.ui.views.markdown.MarkdownView
+import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import stoneapp.secminhr.cavern.cavernObject.Comment
 
 @Composable
 fun Comment(comment: Comment, onUserLinkClicked: (String) -> Unit, replyClicked: () -> Unit) {
-
+    val viewModel = viewModel<CurrentUserViewModel>()
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = comment.commenterNickname, modifier = Modifier.padding(start = 16.dp))
-            if (MainActivity.hasCurrentUser) {
+            if (viewModel.currentUser != null) {
                 IconButton(onClick = replyClicked) {
                     Icon(Icons.Default.Reply, "Reply")
                 }

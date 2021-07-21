@@ -21,8 +21,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import personal.secminhr.cavern.R
-import personal.secminhr.cavern.main.MainActivity
-import personal.secminhr.cavern.main.viewmodel.LogoutViewModel
+import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import personal.secminhr.cavern.main.viewmodel.UserInfoViewModel
 
 @Composable
@@ -36,7 +35,6 @@ fun UserView(username: State<String>, showSnackbar: (String) -> Unit) {
     }
 
     val avatarImageView = ImageView(LocalContext.current)
-    val logoutViewModel: LogoutViewModel = viewModel()
 
     if (user.value == null) {
         CircularProgressIndicator()
@@ -96,12 +94,11 @@ fun UserView(username: State<String>, showSnackbar: (String) -> Unit) {
                 Text(user.value!!.postCount.toString(), modifier = Modifier.weight(0.5f, true))
             }
 
-            if (user.value == MainActivity.currentAccount) {
+            val viewModel = viewModel<CurrentUserViewModel>()
+            if (user.value == viewModel.currentUser) {
                 OutlinedButton(
                     onClick = {
-                        logoutViewModel.logout {
-                            MainActivity.currentAccount = null
-                        }
+                        viewModel.logout()
                     },
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
