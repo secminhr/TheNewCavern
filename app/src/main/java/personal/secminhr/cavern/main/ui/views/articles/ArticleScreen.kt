@@ -24,6 +24,7 @@ import personal.secminhr.cavern.main.MainActivity.Companion.editorScreen
 import personal.secminhr.cavern.main.MainActivity.Companion.loginScreen
 import personal.secminhr.cavern.main.ui.style.purple500
 import personal.secminhr.cavern.main.ui.views.Screen
+import personal.secminhr.cavern.main.ui.views.navigateTo
 import personal.secminhr.cavern.main.viewmodel.ArticlesListViewModel
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 

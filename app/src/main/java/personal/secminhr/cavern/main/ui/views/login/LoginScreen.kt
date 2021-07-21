@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Article
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import personal.secminhr.cavern.main.ui.views.Screen
+import personal.secminhr.cavern.main.ui.views.backToPreviousScreen
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 
 class LoginScreen: Screen {

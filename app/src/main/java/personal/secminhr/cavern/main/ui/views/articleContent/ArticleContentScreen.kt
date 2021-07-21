@@ -17,6 +17,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import personal.secminhr.cavern.main.MainActivity.Companion.articleScreen
 import personal.secminhr.cavern.main.MainActivity.Companion.editorScreen
 import personal.secminhr.cavern.main.ui.views.Screen
+import personal.secminhr.cavern.main.ui.views.backToPreviousScreen
+import personal.secminhr.cavern.main.ui.views.navigateTo
+import personal.secminhr.cavern.main.ui.views.sameAppBarIconAs
 import personal.secminhr.cavern.main.viewmodel.ArticleContentViewModel
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import stoneapp.secminhr.cavern.cavernObject.Article
@@ -87,7 +90,7 @@ class ArticleContentScreen(val preview: ArticlePreview): Screen {
                 Icon(Icons.Default.Edit, "Edit")
             }
         }
-        super.sameAppBarIconAs(articleScreen)(this)
+        sameAppBarIconAs(articleScreen)(this)
     }
 
     override val topBarTitle: MutableState<String> = mutableStateOf("Cavern")

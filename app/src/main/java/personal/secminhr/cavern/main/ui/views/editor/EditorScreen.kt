@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import personal.secminhr.cavern.main.ui.style.purple500
 import personal.secminhr.cavern.main.ui.views.Screen
+import personal.secminhr.cavern.main.ui.views.backToPreviousScreen
 import personal.secminhr.cavern.main.ui.views.markdown.MarkdownView
 import personal.secminhr.cavern.main.viewmodel.EditorViewModel
 
