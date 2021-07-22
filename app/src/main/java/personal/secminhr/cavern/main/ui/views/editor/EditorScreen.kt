@@ -1,7 +1,6 @@
 package personal.secminhr.cavern.main.ui.views.editor
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -20,11 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import personal.secminhr.cavern.main.ui.style.purple500
 import personal.secminhr.cavern.main.ui.views.Screen
-import personal.secminhr.cavern.main.ui.views.backToPreviousScreen
 import personal.secminhr.cavern.main.ui.views.markdown.MarkdownView
 import personal.secminhr.cavern.main.viewmodel.EditorViewModel
 
-class EditorScreen(val useTitle: String? = null, val useContent: String? = null, val id: Int? = null): Screen {
+class EditorScreen(val useTitle: String? = null, val useContent: String? = null, val id: Int? = null): Screen() {
     private val saved = mutableStateOf(true)
     private val showLeavingAlert = mutableStateOf(false)
     private lateinit var editorViewModel: EditorViewModel
@@ -32,13 +30,26 @@ class EditorScreen(val useTitle: String? = null, val useContent: String? = null,
     private val inEditArticleMode = (useTitle != null)
     lateinit var title: MutableState<String>
     lateinit var articleContent: MutableState<TextFieldValue>
+    val topBarTitle: MutableState<String> = mutableStateOf("Cavern")
 
     @Composable
-    override fun Content(showSnackbar: (String) -> Unit) {
+    override fun Screen(showSnackbar: (String) -> Unit) {
         editorViewModel = viewModel(factory = EditorViewModel.factory(LocalContext.current))
         val currentTabIndex = remember { mutableStateOf(0) }
         title = remember { if (!inEditArticleMode) editorViewModel.getTitle() else mutableStateOf(useTitle!!) }
         articleContent = remember{ if (!inEditArticleMode) editorViewModel.getContent() else mutableStateOf(TextFieldValue(text=useContent!!)) }
+
+        appBar(showBackButton = true) {
+            title(topBarTitle.value)
+            if (!inEditArticleMode) {
+                iconButton(::save) {
+                    Icon(Icons.Default.Save, "Save")
+                }
+            }
+            iconButton(if (!inEditArticleMode) ::send else ::edit) {
+                SendIcon()
+            }
+        }
 
         if (showLeavingAlert.value && !inEditArticleMode) {
             AlertDialog(onDismissRequest = {},
@@ -145,26 +156,6 @@ class EditorScreen(val useTitle: String? = null, val useContent: String? = null,
             isContentError.value = true
         }
     }
-
-    override val topBarIcons: @Composable RowScope.() -> Unit = {
-        if (!inEditArticleMode) {
-            IconButton(onClick = { save() }) {
-                Icon(Icons.Default.Save, "Save")
-            }
-        }
-        IconButton(onClick = {
-            if (!inEditArticleMode) {
-                send()
-            } else {
-                edit()
-            }
-        }) {
-            SendIcon()
-        }
-    }
-
-    override val shouldShowBackButton = true
-    override val topBarTitle: MutableState<String> = mutableStateOf("Cavern")
 
     private var leaving: (() -> Unit)? = null
     override val leavingScreen: (() -> Unit) -> Unit = {

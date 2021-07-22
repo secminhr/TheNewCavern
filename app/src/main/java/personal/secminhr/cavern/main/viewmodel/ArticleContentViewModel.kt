@@ -1,7 +1,6 @@
 package personal.secminhr.cavern.main.viewmodel
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +16,7 @@ class ArticleContentViewModel: CavernViewModel() {
     private var content = mutableStateOf(Article.empty)
     private var comments = mutableStateOf(listOf<Comment>())
 
-    fun getArticleContent(preview: ArticlePreview, onError: (CavernError) -> Unit = {}): State<Article> {
+    fun getArticleContent(preview: ArticlePreview, onError: (CavernError) -> Unit = {}): MutableState<Article> {
         content.value = Article(preview.id, preview.title, preview.author, preview.authorUsername, preview.liked, "")
         viewModelScope.launch(Dispatchers.IO) {
             try {

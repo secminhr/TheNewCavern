@@ -29,7 +29,12 @@ class MainActivity : FragmentActivity() {
 
         setContent {
             Column {
-                AppBar(screen = screenHistory.currentScreen, backAction = ::onBackPressed)
+                AppBar(screenHistory.currentScreen.barScope, screenHistory.currentScreen.shouldShowBackButton, backAction = ::onBackPressed)
+//                AppBar(
+//                    icons = screenHistory.currentScreen.topBarIcons,
+//                    title = screenHistory.currentScreen.topBarTitle.value,
+//                    showBackButton = screenHistory.currentScreen.shouldShowBackButton,
+//                    backAction = ::onBackPressed)
                 MainActivityView(screenHistory.currentScreen)
             }
         }

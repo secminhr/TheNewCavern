@@ -5,7 +5,10 @@ import android.widget.ImageView
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
@@ -24,16 +27,21 @@ import personal.secminhr.cavern.main.MainActivity.Companion.editorScreen
 import personal.secminhr.cavern.main.MainActivity.Companion.loginScreen
 import personal.secminhr.cavern.main.ui.style.purple500
 import personal.secminhr.cavern.main.ui.views.Screen
-import personal.secminhr.cavern.main.ui.views.navigateTo
 import personal.secminhr.cavern.main.viewmodel.ArticlesListViewModel
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 
-open class ArticleScreen: Screen {
+open class ArticleScreen: Screen() {
 
     @ExperimentalMaterialApi
     @ExperimentalFoundationApi
     @Composable
-    override fun Content(showSnackbar: (String) -> Unit) {
+    override fun Screen(showSnackbar: (String) -> Unit) {
+        appBar {
+            iconButton({ navigateTo(loginScreen) }) {
+                UserIcon()
+            }
+        }
+
         val viewModel = viewModel<ArticlesListViewModel>()
         val currentUserViewModel = viewModel<CurrentUserViewModel>()
         ArticleList(list = viewModel.getArticlesPreview(onNoConnection = { showSnackbar(it.message!!) },
@@ -58,12 +66,6 @@ open class ArticleScreen: Screen {
         }
     }
 
-    override val topBarIcons: @Composable RowScope.() -> Unit = {
-        IconButton(onClick = { navigateTo(loginScreen) }) {
-            UserIcon()
-        }
-    }
-
     @Composable
     fun UserIcon() {
         val viewModel = viewModel<CurrentUserViewModel>()
@@ -81,6 +83,4 @@ open class ArticleScreen: Screen {
             Icon(Icons.Default.AccountCircle, null)
         }
     }
-
-    override val shouldShowBackButton = false
 }
