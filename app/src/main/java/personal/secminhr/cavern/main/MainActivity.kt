@@ -10,6 +10,7 @@ import personal.secminhr.cavern.main.ui.views.MainActivityView
 import personal.secminhr.cavern.main.ui.views.ScreenStack
 import personal.secminhr.cavern.main.ui.views.articleContent.ArticleContentScreen
 import personal.secminhr.cavern.main.ui.views.articles.ArticleScreen
+import personal.secminhr.cavern.main.ui.views.backToPreviousScreen
 import personal.secminhr.cavern.main.ui.views.editor.EditorScreen
 import personal.secminhr.cavern.main.ui.views.login.LoginScreen
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
