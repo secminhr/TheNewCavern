@@ -8,7 +8,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.createDataStore
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -17,8 +17,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import stoneapp.secminhr.cavern.cavernTool.CavernViewModel
 
+val Context.dataStore by preferencesDataStore("Cavern")
 class EditorViewModel(context: Context): CavernViewModel() {
-    private val dataStore = context.createDataStore("Cavern")
+    private val dataStore = context.dataStore
 
     private val title = mutableStateOf("")
     private val content = mutableStateOf(TextFieldValue())
