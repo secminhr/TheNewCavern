@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import personal.secminhr.cavern.main.MainActivity.Companion.articleScreen
 import personal.secminhr.cavern.main.MainActivity.Companion.editorScreen
 import personal.secminhr.cavern.main.ui.views.Screen
+import personal.secminhr.cavern.main.ui.views.articles.ArticleScreen
 import personal.secminhr.cavern.main.viewmodel.ArticleContentViewModel
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
@@ -23,6 +23,7 @@ class ArticleContentScreen(val preview: ArticlePreview): Screen() {
     @Composable
     override fun Screen(showSnackbar: (String) -> Unit) {
         val viewModel = viewModel<ArticleContentViewModel>()
+
         var comments by remember { viewModel.getComments(preview) { showSnackbar(it.message!!) } }
         val article by remember { viewModel.getArticleContent(preview) { showSnackbar(it.message!!) } }
         var showDeleteAlert by remember { mutableStateOf(false) }
@@ -31,7 +32,6 @@ class ArticleContentScreen(val preview: ArticlePreview): Screen() {
 
         appBar(showBackButton = true) {
             title(title.value)
-
             if (userViewModel.currentUser?.username == preview.authorUsername) {
                 iconButton({ showDeleteAlert = true }) {
                     Icon(Icons.Default.DeleteForever, "Delete")
@@ -40,7 +40,7 @@ class ArticleContentScreen(val preview: ArticlePreview): Screen() {
                     Icon(Icons.Default.Edit, "Edit")
                 }
             }
-            iconsFrom(articleScreen)
+            iconsFrom(ArticleScreen)
         }
 
         ArticleContentView(

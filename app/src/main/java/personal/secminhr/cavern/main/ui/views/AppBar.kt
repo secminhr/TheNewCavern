@@ -21,10 +21,12 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun AppBar(bar: BarScope, showBackButton: Boolean, backAction: () -> Unit) {
     TopAppBar {
-        Row(modifier = Modifier
-            .align(Alignment.CenterVertically)
-            .weight(1.0f)) {
-            if(showBackButton) {
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .weight(1.0f)
+        ) {
+            if (showBackButton) {
                 IconButton(onClick = backAction) {
                     Icon(Icons.Default.ArrowBack, "Back")
                 }
@@ -35,7 +37,8 @@ fun AppBar(bar: BarScope, showBackButton: Boolean, backAction: () -> Unit) {
                     .align(Alignment.CenterVertically)
                     .padding(start = 16.dp)
             ) {
-                Text(it,
+                Text(
+                    it,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.align(Alignment.CenterVertically),

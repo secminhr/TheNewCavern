@@ -9,7 +9,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import personal.secminhr.cavern.main.ui.views.Screen
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 
-class LoginScreen: Screen() {
+object LoginScreen: Screen() {
 
     @Composable
     override fun Screen(showSnackbar: (String) -> Unit) {
@@ -35,8 +35,7 @@ class LoginScreen: Screen() {
                     })
                 }
             } else {
-                val username = remember(it) { mutableStateOf(it.username) }
-                UserView(username, showSnackbar)
+                UserView(it)
             }
         }
     }

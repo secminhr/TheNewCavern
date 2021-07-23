@@ -1,6 +1,6 @@
 package personal.secminhr.cavern.main.ui.views.login
 
-import android.widget.ImageView
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,14 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.bumptech.glide.Glide
-import personal.secminhr.cavern.R
+import coil.compose.rememberImagePainter
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import personal.secminhr.cavern.main.viewmodel.UserInfoViewModel
+import stoneapp.secminhr.cavern.cavernObject.Account
 
 @Composable
 fun UserView(username: State<String>, showSnackbar: (String) -> Unit) {
@@ -34,77 +32,104 @@ fun UserView(username: State<String>, showSnackbar: (String) -> Unit) {
         }
     }
 
-    val avatarImageView = ImageView(LocalContext.current)
-
     if (user.value == null) {
         CircularProgressIndicator()
     } else {
-        Glide.with(LocalContext.current)
-            .asDrawable()
-            .load(user.value!!.avatarLink)
-            .placeholder(R.drawable.logo_img)
-            .into(avatarImageView)
+        UserView(user = user.value!!)
+    }
+}
 
-        Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-            AndroidView(
-                { avatarImageView },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-                    .padding(0.dp, 0.dp, 0.dp, 8.dp)
+@Composable
+fun UserView(user: Account) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(8.dp)) {
+        Image(
+            painter = rememberImagePainter(user.avatarLink),
+            contentDescription = null,
+            modifier =
+            Modifier
+                .align(Alignment.CenterHorizontally)
+                .heightIn(max = 150.dp)
+                .padding(0.dp, 0.dp, 0.dp, 8.dp)
+        )
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(4.dp))
+            .background(Color.LightGray)
+            .padding(8.dp)) {
+            Text(
+                "基本資料",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.LightGray)
             )
-            Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)).background(Color.LightGray).padding(8.dp)) {
-                Text(
-                    "基本資料",
-                    modifier = Modifier.fillMaxWidth()
-                        .background(Color.LightGray)
-                )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally).padding(8.dp)
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+                .padding(8.dp)
+        ) {
+            Text("使用者名稱", modifier = Modifier.weight(0.5f, true))
+            Text(user.username, modifier = Modifier.weight(0.5f, true))
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+                .padding(8.dp)
+        ) {
+            Text("暱稱", modifier = Modifier.weight(0.5f, true))
+            Text(user.nickname, modifier = Modifier.weight(0.5f, true))
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+                .padding(8.dp)
+        ) {
+            Text("權限", modifier = Modifier.weight(0.5f, true))
+            Text(user.role.name, modifier = Modifier.weight(0.5f, true))
+        }
+
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(4.dp))
+            .background(Color.LightGray)
+            .padding(8.dp)) {
+            Text(
+                "統計",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.LightGray)
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+                .padding(8.dp)
+        ) {
+            Text("文章數", modifier = Modifier.weight(0.5f, true))
+            Text(user.postCount.toString(), modifier = Modifier.weight(0.5f, true))
+        }
+
+        val viewModel = viewModel<CurrentUserViewModel>()
+        if (user == viewModel.currentUser) {
+            OutlinedButton(
+                onClick = {
+                    viewModel.logout()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
             ) {
-                Text("使用者名稱", modifier = Modifier.weight(0.5f, true))
-                Text(username.value, modifier = Modifier.weight(0.5f, true))
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally).padding(8.dp)
-            ) {
-                Text("暱稱", modifier = Modifier.weight(0.5f, true))
-                Text(user.value!!.nickname, modifier = Modifier.weight(0.5f, true))
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally).padding(8.dp)
-            ) {
-                Text("權限", modifier = Modifier.weight(0.5f, true))
-                Text(user.value!!.role.name, modifier = Modifier.weight(0.5f, true))
-            }
-
-            Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)).background(Color.LightGray).padding(8.dp)) {
-                Text(
-                    "統計",
-                    modifier = Modifier.fillMaxWidth()
-                        .background(Color.LightGray)
-                )
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally).padding(8.dp)
-            ) {
-                Text("文章數", modifier = Modifier.weight(0.5f, true))
-                Text(user.value!!.postCount.toString(), modifier = Modifier.weight(0.5f, true))
-            }
-
-            val viewModel = viewModel<CurrentUserViewModel>()
-            if (user.value == viewModel.currentUser) {
-                OutlinedButton(
-                    onClick = {
-                        viewModel.logout()
-                    },
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
-                ) {
-                    Text("Logout")
-                }
+                Text("Logout")
             }
         }
     }

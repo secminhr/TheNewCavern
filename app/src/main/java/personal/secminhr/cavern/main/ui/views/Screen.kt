@@ -11,15 +11,14 @@ abstract class Screen {
     @Composable
     abstract fun Screen(showSnackbar: (String) -> Unit)
 
-    var shouldShowBackButton: Boolean = false
+    var shouldShowBackButton: Boolean by mutableStateOf(false)
         private set
     open val leavingScreen: (() -> Unit) -> Unit
         get() = { it() }
 
-    var barScope by mutableStateOf(BarScope())
-        private set
+    val barScope = BarScope()
     fun appBar(showBackButton: Boolean = false, bar: BarScope.() -> Unit) {
-        barScope = BarScope()
+        barScope.clear()
         shouldShowBackButton = showBackButton
         bar(barScope)
     }
@@ -46,6 +45,11 @@ class BarScope {
     val iconButtons = mutableStateListOf<Pair<ComposableFunc, ClickFunc>>()
     var  title: String by mutableStateOf("Cavern")
         private set
+
+    fun clear() {
+        iconButtons.clear()
+        title = "Cavern"
+    }
 
     fun title(title: String) {
         this.title = title

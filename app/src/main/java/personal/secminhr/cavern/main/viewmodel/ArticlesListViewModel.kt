@@ -4,8 +4,13 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import stoneapp.secminhr.cavern.api.requests.ArticlesDataSource
 import stoneapp.secminhr.cavern.cavernError.NetworkError
 import stoneapp.secminhr.cavern.cavernError.NoConnectionError
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
@@ -16,6 +21,13 @@ class ArticlesListViewModel: CavernViewModel() {
     var listState: LazyListState? = null
     private var articles = mutableStateListOf<ArticlePreview>()
     private var articlesData = mutableMapOf<Int, List<ArticlePreview>>()
+
+    val pagedArticles: Flow<PagingData<ArticlePreview>> by lazy {
+        Pager(PagingConfig(10)) { ArticlesDataSource() }.flow
+    }
+
+    fun getArticlesPaged(): Flow<PagingData<ArticlePreview>> =
+        Pager(PagingConfig(10)) { ArticlesDataSource() }.flow
 
     fun getArticlesPreview(
         onNoConnection: (NoConnectionError) -> Unit = {},
