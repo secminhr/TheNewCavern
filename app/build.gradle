@@ -60,7 +60,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha01"
     implementation project(":cavern")
-    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha06"
+    implementation "androidx.datastore:datastore-preferences:1.0.0-rc02"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.webkit:webkit:1.4.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
