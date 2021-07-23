@@ -19,13 +19,40 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun AppBar(screen: Screen, backAction: () -> Unit) {
-    AppBar(
-        icons = screen.topBarIcons,
-        title = screen.topBarTitle.value,
-        showBackButton = screen.shouldShowBackButton,
-        backAction
-    )
+fun AppBar(bar: BarScope, showBackButton: Boolean, backAction: () -> Unit) {
+    TopAppBar {
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .weight(1.0f)
+        ) {
+            if (showBackButton) {
+                IconButton(onClick = backAction) {
+                    Icon(Icons.Default.ArrowBack, "Back")
+                }
+            }
+            Crossfade(
+                targetState = bar.title,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(start = 16.dp)
+            ) {
+                Text(
+                    it,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+        for ((icon, action) in bar.iconButtons) {
+            IconButton(onClick = action) {
+                icon()
+            }
+        }
+    }
 }
 
 @Composable
@@ -36,8 +63,7 @@ fun AppBar(icons: @Composable RowScope.() -> Unit,
     TopAppBar {
         Row(modifier = Modifier
             .align(Alignment.CenterVertically)
-            .weight(1.0f)
-        ) {
+            .weight(1.0f)) {
             if(showBackButton) {
                 IconButton(onClick = backAction) {
                     Icon(Icons.Default.ArrowBack, "Back")
@@ -46,9 +72,10 @@ fun AppBar(icons: @Composable RowScope.() -> Unit,
             Crossfade(
                 targetState = title,
                 modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .padding(start = 16.dp)
+                    .align(Alignment.CenterVertically)
+                    .padding(start = 16.dp)
             ) {
+
                 Text(it,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium,

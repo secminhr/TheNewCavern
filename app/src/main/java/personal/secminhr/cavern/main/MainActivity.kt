@@ -12,7 +12,6 @@ import personal.secminhr.cavern.main.ui.views.articleContent.ArticleContentScree
 import personal.secminhr.cavern.main.ui.views.articles.ArticleScreen
 import personal.secminhr.cavern.main.ui.views.backToPreviousScreen
 import personal.secminhr.cavern.main.ui.views.editor.EditorScreen
-import personal.secminhr.cavern.main.ui.views.login.LoginScreen
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import stoneapp.secminhr.cavern.cavernError.SessionExpiredError
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
@@ -30,7 +29,7 @@ class MainActivity : FragmentActivity() {
 
         setContent {
             Column {
-                AppBar(screen = screenHistory.currentScreen, backAction = ::onBackPressed)
+                AppBar(screenHistory.currentScreen.barScope, screenHistory.currentScreen.shouldShowBackButton, backAction = ::onBackPressed)
                 MainActivityView(screenHistory.currentScreen)
             }
         }
@@ -45,12 +44,10 @@ class MainActivity : FragmentActivity() {
     }
 
     companion object {
-        val articleScreen = ArticleScreen()
         fun articleContentScreen(preview: ArticlePreview) = ArticleContentScreen(preview)
         fun editorScreen(title: String? = null, content: String? = null, id: Int? = null) = EditorScreen(title, content, id)
-        val loginScreen = LoginScreen()
 
-        val screenHistory = ScreenStack(articleScreen)
+        val screenHistory = ScreenStack(ArticleScreen)
     }
 }
 

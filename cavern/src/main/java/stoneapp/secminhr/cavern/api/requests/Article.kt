@@ -18,43 +18,6 @@ import java.net.URL
 import java.net.UnknownHostException
 import java.util.*
 
-internal suspend fun Articles(pageLimit: Int): Flow<Pair<Int, List<ArticlePreview>>> = flow {
-    var counter = 1
-    while (true) {
-        val list = runCatching {
-            val url = URL("${Cavern.host}/ajax/posts.php?page=$counter&limit=$pageLimit")
-            url.openStream().inputAs<JsonObject>()
-        }.getOrElse {
-            throw when (it) {
-                is UnknownHostException -> NoConnectionError()
-                else -> NetworkError()
-            }
-        }.run {
-            this["posts"]?.let {
-                json.decodeFromJsonElement<Array<ArticlePreview>>(it)
-            }.toList()
-        }
-
-        if (list.isEmpty()) {
-            counter = 1
-            continue
-        }
-
-        emit(counter to list)
-        counter++
-    }
-}.flowOn(Dispatchers.IO)
-
-private fun <T> Array<T>?.toList(): List<T> {
-    if (this == null) {
-        return emptyList()
-    }
-    val list = mutableListOf<T>()
-    list.addAll(this)
-    return list
-
-}
-
 internal suspend fun ArticleContent(preview: ArticlePreview): Article = withContext(Dispatchers.IO) {
     runCatching {
         val url = URL("${Cavern.host}/ajax/posts.php?pid=${preview.id}")

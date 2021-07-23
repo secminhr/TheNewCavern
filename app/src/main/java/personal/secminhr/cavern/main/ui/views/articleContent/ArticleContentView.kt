@@ -26,10 +26,10 @@ import stoneapp.secminhr.cavern.cavernObject.Comment
 @ExperimentalMaterialApi
 @Composable
 fun ArticleContentView(
-    article: State<Article>,
+    article: Article,
     preview: ArticlePreview,
     titleState: MutableState<String>,
-    comments: MutableState<List<Comment>>,
+    comments: List<Comment>,
     onCommentSend: () -> Unit,
     showSnackbar: (String) -> Unit
 ) {
@@ -56,8 +56,8 @@ fun ArticleContentView(
             }
 
             val viewModel = viewModel<ArticleContentViewModel>()
-            ArticleInfo(article.value, preview, likeState.value, onAuthorClicked = {
-                bottomSheetUsername.value = article.value.authorUsername
+            ArticleInfo(article, preview, likeState.value, onAuthorClicked = {
+                bottomSheetUsername.value = article.authorUsername
                 scope.launch {
                     bottomSheetScaffoldState.bottomSheetState.expand()
                 }
@@ -70,10 +70,10 @@ fun ArticleContentView(
                 }
             })
 
-            if (article.value.content == "") {
+            if (article.content == "") {
                 CircularProgressIndicator()
             } else {
-                MarkdownView(article.value.content) {
+                MarkdownView(article.content) {
                     bottomSheetUsername.value = it
                     scope.launch {
                         bottomSheetScaffoldState.bottomSheetState.expand()
@@ -85,7 +85,7 @@ fun ArticleContentView(
             Divider(modifier = Modifier.padding(top = 14.dp, bottom = 14.dp))
 
             val comment = remember { mutableStateOf("") }
-            comments.value.forEach {
+            comments.forEach {
                 Comment(comment = it, onUserLinkClicked = {
                     bottomSheetUsername.value = it
                     scope.launch {

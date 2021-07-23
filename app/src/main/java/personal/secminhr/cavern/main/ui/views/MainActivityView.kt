@@ -22,7 +22,7 @@ fun MainActivityView(screen: Screen) {
         Column {
             Scaffold(scaffoldState = scaffoldState) {
                 Crossfade(screen) {
-                    it.Content(showSnackbar = {
+                    it.Screen(showSnackbar = {
                         scope.launch {
                             scaffoldState.snackbarHostState.showSnackbar(it)
                         }
