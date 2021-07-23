@@ -1,7 +1,6 @@
 package personal.secminhr.cavern.main.viewmodel
 
 import android.content.Context
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -13,7 +12,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import stoneapp.secminhr.cavern.cavernTool.CavernViewModel
 
@@ -21,58 +21,33 @@ val Context.dataStore by preferencesDataStore("Cavern")
 class EditorViewModel(context: Context): CavernViewModel() {
     private val dataStore = context.dataStore
 
-    private val title = mutableStateOf("")
-    private val content = mutableStateOf(TextFieldValue())
-
-
-    fun getTitle(): MutableState<String> {
-        viewModelScope.launch {
-            dataStore.data.collect {
-                title.value = it[titleKey] ?: ""
-            }
-        }
-
-        return title
+    fun getTitle(): Flow<String> = dataStore.data.map {
+        it[titleKey]?: ""
     }
 
-    fun getContent(): MutableState<TextFieldValue> {
-        viewModelScope.launch {
-            dataStore.data.collect {
-                content.value = TextFieldValue(text = it[contentKey]?: "", TextRange(it[cursorPosKey]?: 0))
-            }
-        }
-
-        return content
+    fun getContent(): Flow<TextFieldValue> = dataStore.data.map {
+        TextFieldValue(text = it[contentKey]?: "", TextRange(it[cursorPosKey]?: 0))
     }
 
-    private fun clearAndSave() {
-        clear()
-        save()
-    }
-
-    private fun clear() {
-        title.value = ""
-        content.value = TextFieldValue()
-    }
-
-    fun save() {
+    fun save(title: String, content: TextFieldValue, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             dataStore.edit {
-                it[titleKey] = title.value
-                it[contentKey] = content.value.text
-                it[cursorPosKey] = content.value.selection.min
+                it[titleKey] = title
+                it[contentKey] = content.text
+                it[cursorPosKey] = content.selection.min
             }
+            onSuccess()
         }
     }
 
     val sendingState = mutableStateOf(SendState.Resting)
-    fun send(onSuccess: () -> Unit = {}) {
+    fun send(title: String, content: String, onSuccess: () -> Unit = {}) {
         sendingState.value = SendState.Sending
         viewModelScope.launch {
-            val result = cavernApi.publishArticle(title.value, content.value.text)
+            val result = cavernApi.publishArticle(title, content)
             sendingState.value = if (result) SendState.Success else SendState.Failed
             if (result) {
-                clearAndSave()
+                save("", TextFieldValue())
                 onSuccess()
             }
         }

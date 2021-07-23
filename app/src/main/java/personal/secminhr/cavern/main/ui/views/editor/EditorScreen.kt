@@ -7,10 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -32,82 +29,101 @@ class EditorScreen(val useTitle: String? = null, val useContent: String? = null,
     private val inEditArticleMode = (useTitle != null)
     lateinit var title: MutableState<String>
     lateinit var articleContent: MutableState<TextFieldValue>
+    lateinit var showSnackbar: (String) -> Unit
 
     @Composable
     override fun Content(showSnackbar: (String) -> Unit) {
+        this.showSnackbar = showSnackbar
         editorViewModel = viewModel(factory = EditorViewModel.factory(LocalContext.current))
         val currentTabIndex = remember { mutableStateOf(0) }
-        title = remember { if (!inEditArticleMode) editorViewModel.getTitle() else mutableStateOf(useTitle!!) }
-        articleContent = remember{ if (!inEditArticleMode) editorViewModel.getContent() else mutableStateOf(TextFieldValue(text=useContent!!)) }
+        val savedTitle by editorViewModel.getTitle().collectAsState(null)
+        val savedContent by editorViewModel.getContent().collectAsState(null)
+        if (savedTitle == null || savedContent == null) {
+            CircularProgressIndicator()
+        } else {
+            title = remember {
+                mutableStateOf(if (!inEditArticleMode) savedTitle!! else useTitle!!)
+            }
 
-        if (showLeavingAlert.value && !inEditArticleMode) {
-            AlertDialog(onDismissRequest = {},
-                title = { Text("Saving?") },
-                text = { Text("Your draft hasn't been saved.\nDo you want to save it?") },
-                confirmButton = {
-                    Button(onClick = {
-                        editorViewModel.save()
-                        saved.value = true
-                        showLeavingAlert.value = false
-                        alertFinished()
-                    }) {
-                        Text("Save")
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = {
-                        showLeavingAlert.value = false
-                        alertFinished()
-                    }) {
-                        Text("No", color = Color.Red)
-                    }
-                }
-            )
-        }
+            articleContent = remember {
+                mutableStateOf(if (!inEditArticleMode) savedContent!! else TextFieldValue(text = useContent!!))
+            }
 
-        Column {
-            TabRow(selectedTabIndex = currentTabIndex.value,
-                backgroundColor = purple500,
-                contentColor = Color.White) {
-                Tab(selected = currentTabIndex.value == 0,
-                    text = { Text("Editor") },
-                    onClick = { currentTabIndex.value = 0 }
-                )
-                val manager = LocalFocusManager.current
-                Tab(selected = currentTabIndex.value == 1,
-                    text = { Text("Preview") },
-                    onClick = {
-                        manager.clearFocus()
-                        currentTabIndex.value = 1
+            if (showLeavingAlert.value && !inEditArticleMode) {
+                AlertDialog(onDismissRequest = {},
+                    title = { Text("Saving?") },
+                    text = { Text("Your draft hasn't been saved.\nDo you want to save it?") },
+                    confirmButton = {
+                        Button(onClick = {
+                            editorViewModel.save(title.value, articleContent.value) {
+                                showSnackbar("Saved!")
+                            }
+                            saved.value = true
+                            showLeavingAlert.value = false
+                            alertFinished()
+                        }) {
+                            Text("Save")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            showLeavingAlert.value = false
+                            alertFinished()
+                        }) {
+                            Text("No", color = Color.Red)
+                        }
                     }
                 )
             }
-            if (currentTabIndex.value == 0) {
-                topBarTitle.value = "Cavern"
-                Title(title) {
-                    title.value = it
-                    saved.value = false
+
+            Column {
+                TabRow(
+                    selectedTabIndex = currentTabIndex.value,
+                    backgroundColor = purple500,
+                    contentColor = Color.White
+                ) {
+                    Tab(selected = currentTabIndex.value == 0,
+                        text = { Text("Editor") },
+                        onClick = { currentTabIndex.value = 0 }
+                    )
+                    val manager = LocalFocusManager.current
+                    Tab(selected = currentTabIndex.value == 1,
+                        text = { Text("Preview") },
+                        onClick = {
+                            manager.clearFocus()
+                            currentTabIndex.value = 1
+                        }
+                    )
                 }
-                Tools(articleContent) {
-                    articleContent.value = it
-                    saved.value = false
-                }
-                Editor(articleContent, isError = isContentError.value, onTextChange = {
-                    if (articleContent.value.text != it.text) {
+                if (currentTabIndex.value == 0) {
+                    topBarTitle.value = "Cavern"
+                    Title(title) {
+                        title.value = it
                         saved.value = false
                     }
-                    articleContent.value = it
-                    isContentError.value = false
-                })
-            } else {
-                topBarTitle.value = title.value
-                MarkdownView(text = articleContent.value.text)
+                    Tools(articleContent) {
+                        articleContent.value = it
+                        saved.value = false
+                    }
+                    Editor(articleContent, isError = isContentError.value, onTextChange = {
+                        if (articleContent.value.text != it.text) {
+                            saved.value = false
+                        }
+                        articleContent.value = it
+                        isContentError.value = false
+                    })
+                } else {
+                    topBarTitle.value = title.value
+                    MarkdownView(text = articleContent.value.text)
+                }
             }
         }
     }
 
     private fun save() {
-        editorViewModel.save()
+        editorViewModel.save(title.value, articleContent.value) {
+            showSnackbar("Saved")
+        }
         saved.value = true
     }
 
@@ -122,10 +138,10 @@ class EditorScreen(val useTitle: String? = null, val useContent: String? = null,
     }
 
     private fun send() {
-        editorViewModel.save()
-        if (editorViewModel.getContent().value.text.isNotEmpty()) {
-            editorViewModel.send {
+        if (articleContent.value.text.isNotEmpty()) {
+            editorViewModel.send(title.value, articleContent.value.text) {
                 saved.value = true
+                editorViewModel.save("", TextFieldValue())
                 backToPreviousScreen()
             }
             isContentError.value = false
@@ -168,7 +184,7 @@ class EditorScreen(val useTitle: String? = null, val useContent: String? = null,
 
     private var leaving: (() -> Unit)? = null
     override val leavingScreen: (() -> Unit) -> Unit = {
-        if (!saved.value) {
+        if (!saved.value && !inEditArticleMode) {
             showLeavingAlert.value = true
             leaving = it
         } else {
