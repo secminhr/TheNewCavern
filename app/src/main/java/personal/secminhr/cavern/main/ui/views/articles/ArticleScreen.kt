@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
+import kotlinx.coroutines.launch
 import personal.secminhr.cavern.main.MainActivity.Companion.articleContentScreen
 import personal.secminhr.cavern.main.MainActivity.Companion.editorScreen
 import personal.secminhr.cavern.main.ui.style.purple500
@@ -27,6 +29,7 @@ import personal.secminhr.cavern.main.ui.views.Screen
 import personal.secminhr.cavern.main.ui.views.login.LoginScreen
 import personal.secminhr.cavern.main.viewmodel.ArticlesListViewModel
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
+import stoneapp.secminhr.cavern.cavernObject.Account
 
 object ArticleScreen: Screen() {
 
@@ -34,54 +37,50 @@ object ArticleScreen: Screen() {
     @ExperimentalFoundationApi
     @Composable
     override fun Screen(showSnackbar: (String) -> Unit) {
+        val currentUserViewModel = viewModel<CurrentUserViewModel>()
+
         appBar {
             iconButton({ navigateTo(LoginScreen) }) {
-                UserIcon()
+                UserIcon(currentUserViewModel.currentUser)
             }
         }
 
         val viewModel = viewModel<ArticlesListViewModel>()
-        val currentUserViewModel = viewModel<CurrentUserViewModel>()
-//        val articles = remember { viewModel.pagedArticles }
-//
-//        ArticleList(
-//            articles = articles.collectAsLazyPagingItems(),
-//            state = viewModel.listState!!,
-//            onItemClicked = { navigateTo(articleContentScreen(it)) },
-//            onLikeClicked = {
-//                if (currentUserViewModel.currentUser != null) {
-//                    viewModel.likeArticle(it)
-//                }
-//            }
-//        )
-        ArticleList(list = viewModel.getArticlesPreview(onNoConnection = { showSnackbar(it.message!!) },
-            onNetworkError = { showSnackbar(it.message!!) }),
+        val scope = rememberCoroutineScope()
+        ArticleList(
+            list = viewModel.getArticlesPreview(
+                onNoConnection = { showSnackbar(it.message!!) },
+                onNetworkError = { showSnackbar(it.message!!) }
+            ),
             state = viewModel.listState!!,
             onItemClicked = { navigateTo(articleContentScreen(it)) },
-            onLikeClicked = {
+            onLikeClicked = { pid ->
                 if (currentUserViewModel.currentUser != null) {
-                    viewModel.likeArticle(it)
+                    scope.launch {
+                        val succeed = viewModel.likeArticle(pid)
+                        if (succeed) {
+                            viewModel.getArticlesPreview(
+                                onNoConnection = { showSnackbar(it.message!!) },
+                                onNetworkError = { showSnackbar(it.message!!) }
+                            )
+                        }
+                    }
                 }
             }
         )
+
         if (currentUserViewModel.currentUser != null) {
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.End) {
-                ExtendedFloatingActionButton(text = { Text("New Article", color = Color.White) },
-                    onClick = { navigateTo(editorScreen()) },
-                    backgroundColor = purple500,
-                    icon = { Icon(Icons.Default.Add, "Add", tint = Color.White) })
+            NewArticleButton {
+                navigateTo(editorScreen())
             }
         }
     }
 
     @Composable
-    fun UserIcon() {
-        val viewModel = viewModel<CurrentUserViewModel>()
-        if (viewModel.currentUser != null) {
+    fun UserIcon(user: Account?) {
+        if (user != null) {
             Image(
-                painter = rememberImagePainter(viewModel.currentUser!!.avatarLink),
+                painter = rememberImagePainter(user.avatarLink),
                 contentDescription = null,
                 modifier = Modifier
                     .clip(CircleShape)
@@ -89,6 +88,23 @@ object ArticleScreen: Screen() {
             )
         } else {
             Icon(Icons.Default.AccountCircle, null)
+        }
+    }
+
+    @Composable
+    fun NewArticleButton(onClick: () -> Unit) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.End
+        ) {
+            ExtendedFloatingActionButton(
+                text = { Text("New Article", color = Color.White) },
+                onClick = onClick,
+                backgroundColor = purple500,
+                icon = { Icon(Icons.Default.Add, "Add", tint = Color.White) })
         }
     }
 }

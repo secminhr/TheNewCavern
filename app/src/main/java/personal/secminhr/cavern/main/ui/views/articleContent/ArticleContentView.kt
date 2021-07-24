@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
@@ -94,6 +95,9 @@ fun ArticleContentView(
                 }, replyClicked = {
                     comment.value += "@${it.commenterUsername} "
                 })
+            }
+            if (comments.isNullOrEmpty()) {
+                Text("No comments", color = Color.Gray, modifier = Modifier.padding(bottom = 16.dp))
             }
 
             val currentUserViewModel = viewModel<CurrentUserViewModel>()

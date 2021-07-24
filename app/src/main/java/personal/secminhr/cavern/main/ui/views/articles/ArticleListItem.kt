@@ -14,8 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,7 +21,11 @@ import java.util.*
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
-fun ArticlePreviewItem(preview: ArticlePreview, onItemClicked: (ArticlePreview) -> Unit = {}, onLikeClicked: (Int) -> Unit = {}) {
+fun ArticlePreviewItem(
+    preview: ArticlePreview,
+    onItemClicked: (ArticlePreview) -> Unit = {},
+    onLikeClicked: (Int) -> Unit = {}
+) {
 
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -43,7 +45,10 @@ fun ArticlePreviewItem(preview: ArticlePreview, onItemClicked: (ArticlePreview) 
 
 @Composable
 fun InfoColumn(preview: ArticlePreview, modifier: Modifier) {
-    Column(modifier = modifier then Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 80.dp)) {
+    Column(
+        modifier = modifier then
+                    Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 80.dp)
+    ) {
         Text(preview.title, style = MaterialTheme.typography.subtitle1)
         Text(preview.author, style = MaterialTheme.typography.subtitle2)
         Text(preview.date.toStringWithFormat("yyyy/MM/dd"),
@@ -56,22 +61,12 @@ fun InfoColumn(preview: ArticlePreview, modifier: Modifier) {
 fun LikeData(preview: ArticlePreview,
              modifier: Modifier,
              onLikeClicked: (Int) -> Unit = {}) {
-
-    val viewModel = viewModel<CurrentUserViewModel>()
     Row(modifier = modifier then Modifier.padding(end = 16.dp)) {
         IconToggleButton(
                 modifier = Modifier.width(48.dp).align(Alignment.CenterVertically),
                 checked = preview.liked,
                 onCheckedChange = {
                     onLikeClicked(preview.id)
-                    if (viewModel.currentUser != null) {
-                        preview.liked = it
-                        if (it) {
-                            preview.upvote = (preview.upvote.toInt() + 1).toString()
-                        } else {
-                            preview.upvote = (preview.upvote.toInt() - 1).toString()
-                        }
-                    }
                 }
         ) {
             if (preview.liked) {
