@@ -23,7 +23,6 @@ import stoneapp.secminhr.cavern.cavernObject.Account
 
 @Composable
 fun UserView(username: String, showSnackbar: (String) -> Unit) {
-
     val infoViewModel = viewModel<UserInfoViewModel>()
     val user = remember(username) {
         infoViewModel.getAuthorInfo(username) {
@@ -52,11 +51,34 @@ fun UserView(user: Account) {
                 .heightIn(max = 150.dp)
                 .padding(0.dp, 0.dp, 0.dp, 8.dp)
         )
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(4.dp))
-            .background(Color.LightGray)
-            .padding(8.dp)) {
+        DataSection(user)
+        val viewModel = viewModel<CurrentUserViewModel>()
+        if (user == viewModel.currentUser) {
+            OutlinedButton(
+                onClick = {
+                    viewModel.logout()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
+            ) {
+                Text("Logout")
+            }
+        }
+    }
+}
+
+@Composable
+fun DataSection(user: Account) {
+    Column {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(4.dp))
+                .background(Color.LightGray)
+                .padding(8.dp)
+        ) {
             Text(
                 "基本資料",
                 modifier = Modifier
@@ -94,11 +116,13 @@ fun UserView(user: Account) {
             Text(user.role.name, modifier = Modifier.weight(0.5f, true))
         }
 
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(4.dp))
-            .background(Color.LightGray)
-            .padding(8.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(4.dp))
+                .background(Color.LightGray)
+                .padding(8.dp)
+        ) {
             Text(
                 "統計",
                 modifier = Modifier
@@ -115,21 +139,6 @@ fun UserView(user: Account) {
         ) {
             Text("文章數", modifier = Modifier.weight(0.5f, true))
             Text(user.postCount.toString(), modifier = Modifier.weight(0.5f, true))
-        }
-
-        val viewModel = viewModel<CurrentUserViewModel>()
-        if (user == viewModel.currentUser) {
-            OutlinedButton(
-                onClick = {
-                    viewModel.logout()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
-            ) {
-                Text("Logout")
-            }
         }
     }
 }

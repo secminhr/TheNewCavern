@@ -24,16 +24,12 @@ class CurrentUserViewModel: CavernViewModel() {
         }
     }
 
-    fun login(username: String, password: String, onFinish: () -> Unit, onWrongCredential: () -> Unit) {
-        viewModelScope.launch {
-            val succeed = cavernApi.login(username, password)
-            if (succeed) {
-                currentUser = cavernApi.currentUser()
-                onFinish()
-            } else {
-                onWrongCredential()
-            }
+    suspend fun login(username: String, password: String): Boolean {
+        val succeed = cavernApi.login(username, password)
+        if (succeed) {
+            currentUser = cavernApi.currentUser()
         }
+        return succeed
     }
 
     fun logout() {
