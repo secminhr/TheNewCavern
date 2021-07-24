@@ -11,7 +11,7 @@ import stoneapp.secminhr.cavern.cavernObject.ArticlePreview
 import stoneapp.secminhr.cavern.cavernObject.Comment
 import stoneapp.secminhr.cavern.cavernTool.CavernViewModel
 
-class ArticleContentViewModel: CavernViewModel() {
+class ArticleViewModel: CavernViewModel() {
 
     private var content = mutableStateOf(Article.empty)
     private var comments = mutableStateOf(listOf<Comment>())

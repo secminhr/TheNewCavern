@@ -18,12 +18,12 @@ import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import stoneapp.secminhr.cavern.cavernObject.Comment
 
 @Composable
-fun Comment(comment: Comment, onUserLinkClicked: (String) -> Unit, replyClicked: () -> Unit) {
+fun Comment(comment: Comment, onUserLinkClicked: (String) -> Unit, showReplyButton: Boolean, replyClicked: () -> Unit) {
     val viewModel = viewModel<CurrentUserViewModel>()
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = comment.commenterNickname, modifier = Modifier.padding(start = 16.dp))
-            if (viewModel.currentUser != null) {
+            if (showReplyButton) {
                 IconButton(onClick = replyClicked) {
                     Icon(Icons.Default.Reply, "Reply")
                 }

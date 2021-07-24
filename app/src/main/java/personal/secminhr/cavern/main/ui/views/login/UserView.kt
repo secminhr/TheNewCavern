@@ -9,7 +9,6 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,11 +22,11 @@ import personal.secminhr.cavern.main.viewmodel.UserInfoViewModel
 import stoneapp.secminhr.cavern.cavernObject.Account
 
 @Composable
-fun UserView(username: State<String>, showSnackbar: (String) -> Unit) {
+fun UserView(username: String, showSnackbar: (String) -> Unit) {
 
     val infoViewModel = viewModel<UserInfoViewModel>()
-    val user = remember(username.value) {
-        infoViewModel.getAuthorInfo(username.value) {
+    val user = remember(username) {
+        infoViewModel.getAuthorInfo(username) {
             showSnackbar(it.message!!)
         }
     }

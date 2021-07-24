@@ -43,6 +43,4 @@ class ArticlesListViewModel: CavernViewModel() {
 
         return articles
     }
-
-    suspend fun likeArticle(id: Int): Boolean = cavernApi.like(id)
 }

@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,12 +20,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
-import kotlinx.coroutines.launch
 import personal.secminhr.cavern.main.MainActivity.Companion.articleContentScreen
 import personal.secminhr.cavern.main.MainActivity.Companion.editorScreen
 import personal.secminhr.cavern.main.ui.style.purple500
 import personal.secminhr.cavern.main.ui.views.Screen
 import personal.secminhr.cavern.main.ui.views.login.LoginScreen
+import personal.secminhr.cavern.main.viewmodel.ArticleViewModel
 import personal.secminhr.cavern.main.viewmodel.ArticlesListViewModel
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import stoneapp.secminhr.cavern.cavernObject.Account
@@ -45,21 +44,20 @@ object ArticleScreen: Screen() {
             }
         }
 
-        val viewModel = viewModel<ArticlesListViewModel>()
-        val scope = rememberCoroutineScope()
+        val articleListViewModel = viewModel<ArticlesListViewModel>()
+        val articleViewModel = viewModel<ArticleViewModel>()
         ArticleList(
-            list = viewModel.getArticlesPreview(
+            list = articleListViewModel.getArticlesPreview(
                 onNoConnection = { showSnackbar(it.message!!) },
                 onNetworkError = { showSnackbar(it.message!!) }
             ),
-            state = viewModel.listState!!,
+            state = articleListViewModel.listState!!,
             onItemClicked = { navigateTo(articleContentScreen(it)) },
             onLikeClicked = { pid ->
                 if (currentUserViewModel.currentUser != null) {
-                    scope.launch {
-                        val succeed = viewModel.likeArticle(pid)
+                    articleViewModel.likeArticle(pid) { succeed ->
                         if (succeed) {
-                            viewModel.getArticlesPreview(
+                            articleListViewModel.getArticlesPreview(
                                 onNoConnection = { showSnackbar(it.message!!) },
                                 onNetworkError = { showSnackbar(it.message!!) }
                             )
