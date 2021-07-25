@@ -3,6 +3,7 @@ package personal.secminhr.cavern.main.ui.views.articleContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -142,7 +144,7 @@ fun CommentEdit(
             value = comment,
             onValueChange = onCommentChange,
             label = { Text("Your new comment") },
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp).align(Alignment.CenterHorizontally).fillMaxWidth(),
             interactionSource = interactionSource,
             trailingIcon = {
                 IconButton(onClick = onSendButtonClick) {
