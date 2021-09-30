@@ -3,6 +3,7 @@ package personal.secminhr.cavern.main.ui.views.markdown
 import android.content.Intent
 import android.graphics.Color
 import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
@@ -42,6 +43,7 @@ fun MarkdownView(text: String, modifier: Modifier = Modifier, onUserLinkClicked:
     AndroidView(factory = {
         WebView(it).apply {
             settings.javaScriptEnabled = true
+            settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
             markdown = markdownRenderHTML.replace("{{markdown_replace}}", text)
             loadDataWithBaseURL("https://stoneapp.tech/cavern", markdown, "text/html", "utf-8", "")
             setBackgroundColor(Color.TRANSPARENT)
