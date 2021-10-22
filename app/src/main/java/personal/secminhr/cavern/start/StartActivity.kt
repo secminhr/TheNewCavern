@@ -32,7 +32,6 @@ import kotlin.concurrent.thread
 class StartActivity : AppCompatActivity() {
 
     private var showUpdateDialog by mutableStateOf(false)
-    private var updateIsRequired = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,20 +54,10 @@ class StartActivity : AppCompatActivity() {
             }
 
             if (showUpdateDialog) {
-                if (updateIsRequired) {
-                    RequireUpdateDialog(
-                        update = this::startActivity,
-                        dismiss = this::finish
-                    )
-                } else {
-                    SkippableUpdateDialog(
-                        update = this::startActivity,
-                        dismiss = {
-                            startActivity(Intent(this@StartActivity, MainActivity::class.java))
-                            finish()
-                        }
-                    )
-                }
+                RequireUpdateDialog(
+                    update = this::startActivity,
+                    dismiss = this::finish
+                )
             }
         }
 
@@ -77,9 +66,9 @@ class StartActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun checkUpdate(context: Context, ) = withContext(Dispatchers.IO) {
+    private suspend fun checkUpdate(context: Context) = withContext(Dispatchers.IO) {
         val url = URL("https://cavern-8e04d.firebaseio.com/appMeta.json")
-        val appMeta: AppMeta = Json.decodeFromString(url.openStream().reader().readText())
+        val appMeta: AppMeta = Json { ignoreUnknownKeys = true }.decodeFromString(url.openStream().reader().readText())
         val info: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
         val currentVersion: Long = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             info.longVersionCode
@@ -87,7 +76,6 @@ class StartActivity : AppCompatActivity() {
             info.versionCode.toLong()
         }
         if (appMeta.newestVersion > currentVersion) {
-            updateIsRequired = appMeta.required
             showUpdateDialog = true
         } else {
             startActivity(Intent(this@StartActivity, MainActivity::class.java))
@@ -96,5 +84,5 @@ class StartActivity : AppCompatActivity() {
     }
 
     @Serializable
-    private data class AppMeta(val newestVersion: Int, val required: Boolean)
+    private data class AppMeta(val newestVersion: Int)
 }
