@@ -2,7 +2,6 @@ package personal.secminhr.cavern.main.ui.views
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -13,6 +12,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -28,7 +28,7 @@ fun AppBar(bar: BarScope, showBackButton: Boolean, backAction: () -> Unit) {
         ) {
             if (showBackButton) {
                 IconButton(onClick = backAction) {
-                    Icon(Icons.Default.ArrowBack, "Back")
+                    Icon(Icons.Default.ArrowBack, "Back", tint = Color.White)
                 }
             }
             Crossfade(
@@ -43,7 +43,8 @@ fun AppBar(bar: BarScope, showBackButton: Boolean, backAction: () -> Unit) {
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.align(Alignment.CenterVertically),
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.White
                 )
             }
         }
@@ -55,39 +56,39 @@ fun AppBar(bar: BarScope, showBackButton: Boolean, backAction: () -> Unit) {
     }
 }
 
-@Composable
-fun AppBar(icons: @Composable RowScope.() -> Unit,
-           title: String,
-           showBackButton: Boolean = false,
-           backAction: () -> Unit = {}) {
-    TopAppBar {
-        Row(modifier = Modifier
-            .align(Alignment.CenterVertically)
-            .weight(1.0f)) {
-            if(showBackButton) {
-                IconButton(onClick = backAction) {
-                    Icon(Icons.Default.ArrowBack, "Back")
-                }
-            }
-            Crossfade(
-                targetState = title,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 16.dp)
-            ) {
-
-                Text(it,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-        icons(this)
-    }
-}
+//@Composable
+//fun AppBar(icons: @Composable RowScope.() -> Unit,
+//           title: String,
+//           showBackButton: Boolean = false,
+//           backAction: () -> Unit = {}) {
+//    TopAppBar {
+//        Row(modifier = Modifier
+//            .align(Alignment.CenterVertically)
+//            .weight(1.0f)) {
+//            if(showBackButton) {
+//                IconButton(onClick = backAction) {
+//                    Icon(Icons.Default.ArrowBack, "Back")
+//                }
+//            }
+//            Crossfade(
+//                targetState = title,
+//                modifier = Modifier
+//                    .align(Alignment.CenterVertically)
+//                    .padding(start = 16.dp)
+//            ) {
+//
+//                Text(it,
+//                    fontSize = 20.sp,
+//                    fontWeight = FontWeight.Medium,
+//                    modifier = Modifier.align(Alignment.CenterVertically),
+//                    maxLines = 1,
+//                    overflow = TextOverflow.Ellipsis
+//                )
+//            }
+//        }
+//        icons(this)
+//    }
+//}
 
 
 //val DefaultIcon = @Composable {

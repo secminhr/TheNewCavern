@@ -10,6 +10,7 @@ import personal.secminhr.cavern.main.ui.views.MainActivityView
 import personal.secminhr.cavern.main.ui.views.ScreenStack
 import personal.secminhr.cavern.main.ui.views.articleContent.ArticleContentScreen
 import personal.secminhr.cavern.main.ui.views.articles.ArticleScreen
+import personal.secminhr.cavern.main.ui.views.editor.EditModeSetting
 import personal.secminhr.cavern.main.ui.views.editor.EditorScreen
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import stoneapp.secminhr.cavern.cavernError.SessionExpiredError
@@ -44,7 +45,7 @@ class MainActivity : FragmentActivity() {
 
     companion object {
         fun articleContentScreen(preview: ArticlePreview) = ArticleContentScreen(preview)
-        fun editorScreen(title: String? = null, content: String? = null, id: Int? = null) = EditorScreen(title, content, id)
+        fun editorScreen(editSetting: EditModeSetting? = null) = EditorScreen(editSetting)
 
         val screenHistory = ScreenStack(ArticleScreen)
     }

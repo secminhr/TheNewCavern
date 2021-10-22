@@ -2,14 +2,17 @@ package personal.secminhr.cavern.main.ui.views.editor.tools
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FormatQuote
-import androidx.compose.runtime.State
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 
-class Quote(override val text: State<TextFieldValue>) : Tool {
+object Quote: Tool {
     override val icon = Icons.Default.FormatQuote
     override val description = "Quote"
-    override val action = {
+
+    override fun transform(textFieldValue: TextFieldValue): TextFieldValue {
+        val oldContent = textFieldValue.text
+        val cursorPos = textFieldValue.selection.min
+
         val length = oldContent.length
         val beforeCursorContent = oldContent.substring(0 until cursorPos)
         val afterCursorContent = oldContent.substring(cursorPos until length)
@@ -25,7 +28,7 @@ class Quote(override val text: State<TextFieldValue>) : Tool {
         }
         val offset = symbol.trimEnd('\n').length
 
-        TextFieldValue(text = "$beforeCursorContent$symbol$afterCursorContent",
-                TextRange(beforeCursorContent.length + offset))
+        return TextFieldValue(text = "$beforeCursorContent$symbol$afterCursorContent",
+            TextRange(beforeCursorContent.length + offset))
     }
 }

@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import personal.secminhr.cavern.main.MainActivity.Companion.editorScreen
 import personal.secminhr.cavern.main.ui.views.Screen
 import personal.secminhr.cavern.main.ui.views.articles.ArticleScreen
+import personal.secminhr.cavern.main.ui.views.editor.EditModeSetting
 import personal.secminhr.cavern.main.ui.views.login.UserView
 import personal.secminhr.cavern.main.viewmodel.ArticleViewModel
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
@@ -43,10 +44,10 @@ class ArticleContentScreen(val preview: ArticlePreview): Screen() {
             title(title.value)
             if (preview.authorIs(userViewModel.currentUser)) {
                 iconButton({ showDeleteAlert = true }) {
-                    Icon(Icons.Default.DeleteForever, "Delete")
+                    Icon(Icons.Default.DeleteForever, "Delete", tint = Color.White)
                 }
-                iconButton({ navigateTo(editorScreen(article.title, article.content, article.id)) }) {
-                    Icon(Icons.Default.Edit, "Edit")
+                iconButton({ navigateTo(editorScreen(EditModeSetting(article.id, article.title, article.content))) }) {
+                    Icon(Icons.Default.Edit, "Edit", tint = Color.White)
                 }
             }
             iconsFrom(ArticleScreen)

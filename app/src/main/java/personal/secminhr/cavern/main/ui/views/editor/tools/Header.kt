@@ -1,13 +1,10 @@
 package personal.secminhr.cavern.main.ui.views.editor.tools
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 
-object ListBulleted: Tool {
-    override val icon = Icons.Default.FormatListBulleted
-    override val description = "Bulleted list"
+interface Header: Tool {
+    val sharps: String
 
     override fun transform(textFieldValue: TextFieldValue): TextFieldValue {
         val oldContent = textFieldValue.text
@@ -16,19 +13,18 @@ object ListBulleted: Tool {
         val length = oldContent.length
         val beforeCursorContent = oldContent.substring(0 until cursorPos)
         val afterCursorContent = oldContent.substring(cursorPos until length)
-        var symbol = "- "
+        var sharps = this.sharps
         val frontNewline = beforeCursorContent.isNotEmpty() && beforeCursorContent.last() != '\n'
         val endNewline = afterCursorContent.isNotEmpty() && afterCursorContent.first() != '\n'
         if(frontNewline) {
-            symbol = "\n$symbol"
+            sharps = "\n$sharps"
         }
         if(endNewline) {
-            symbol += "\n"
+            sharps += "\n"
         }
-        val offset = symbol.trimEnd('\n').length
-
-        return TextFieldValue(text = "$beforeCursorContent$symbol$afterCursorContent",
-            TextRange(beforeCursorContent.length + offset)
+        val offset = sharps.trimEnd('\n').length
+        return TextFieldValue(text = "$beforeCursorContent$sharps$afterCursorContent",
+            selection = TextRange(beforeCursorContent.length + offset)
         )
     }
 }

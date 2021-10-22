@@ -5,6 +5,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import personal.secminhr.cavern.main.ui.views.Screen
@@ -16,7 +17,7 @@ object LoginScreen: Screen() {
     override fun Screen(showSnackbar: (String) -> Unit) {
         appBar {
             iconButton(::backToPreviousScreen) {
-                Icon(Icons.Default.Article, "Article")
+                Icon(Icons.Default.Article, "Article", tint = Color.White)
             }
         }
 

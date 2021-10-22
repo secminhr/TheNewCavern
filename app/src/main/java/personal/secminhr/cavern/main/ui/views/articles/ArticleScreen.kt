@@ -85,7 +85,7 @@ object ArticleScreen: Screen() {
                     .size(24.dp)
             )
         } else {
-            Icon(Icons.Default.AccountCircle, null)
+            Icon(Icons.Default.AccountCircle, null, tint = Color.White)
         }
     }
 

@@ -23,7 +23,7 @@ fun MarkdownView(text: String, modifier: Modifier = Modifier, onUserLinkClicked:
             "  <link href=\"https://fonts.googleapis.com/css2?family=Source+Code+Pro&amp;display=swap\" rel=\"stylesheet\"> \n" +
             "  <!-- jQuery --> \n" +
             "  <script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js\"></script> \n" +
-            "  <link rel=\"stylesheet\" href=\"https://pandao.github.io/editor.md/css/editormd.css\"> \n" +
+            "  <link rel=\"stylesheet\" href=                                                                                                                                                                                                                                      \"https://pandao.github.io/editor.md/css/editormd.css\"> \n" +
             "  <link rel=\"stylesheet\" href=\"https://stoneapp.tech/cavern/include/css/cavern.css\"> \n" +
             " </head> \n" +
             " <body>     \n" +
