@@ -43,32 +43,3 @@ fun RequireUpdateDialog(update: (Intent) -> Unit, dismiss: () -> Unit) {
         modifier = Modifier.padding(horizontal = 16.dp)
     )
 }
-
-
-@Composable
-fun SkippableUpdateDialog(update: (Intent) -> Unit, dismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = dismiss,
-        title = { Text(text = "Update Available") },
-        text = { Text("There is a newer version of Cavern App") },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.data = Uri.parse("https://github.com/secminhr/TheNewCavern/releases/latest")
-                    update(intent)
-                }
-            ) {
-                Text("Update")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = dismiss
-            ) {
-                Text("Later")
-            }
-        },
-        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
-        modifier = Modifier.padding(horizontal = 16.dp)
-    )
-}

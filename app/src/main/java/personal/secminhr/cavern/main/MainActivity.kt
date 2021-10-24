@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.fragment.app.FragmentActivity
+import personal.secminhr.cavern.main.ui.style.CavernTheme
 import personal.secminhr.cavern.main.ui.views.AppBar
 import personal.secminhr.cavern.main.ui.views.MainActivityView
 import personal.secminhr.cavern.main.ui.views.ScreenStack
@@ -28,9 +29,11 @@ class MainActivity : FragmentActivity() {
         }
 
         setContent {
-            Column {
-                AppBar(screenHistory.currentScreen.barScope, screenHistory.currentScreen.shouldShowBackButton, backAction = ::onBackPressed)
-                MainActivityView(screenHistory.currentScreen)
+            CavernTheme {
+                Column {
+                    AppBar(screenHistory.currentScreen.barScope, screenHistory.currentScreen.shouldShowBackButton, backAction = ::onBackPressed)
+                    MainActivityView(screenHistory.currentScreen)
+                }
             }
         }
     }

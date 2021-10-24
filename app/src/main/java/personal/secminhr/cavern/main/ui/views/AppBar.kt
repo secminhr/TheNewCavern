@@ -1,7 +1,6 @@
 package personal.secminhr.cavern.main.ui.views
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -21,32 +20,28 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun AppBar(bar: BarScope, showBackButton: Boolean, backAction: () -> Unit) {
     TopAppBar {
-        Row(
+        if (showBackButton) {
+            IconButton(onClick = backAction) {
+                Icon(Icons.Default.ArrowBack, "Back", tint = Color.White)
+            }
+        }
+
+        Crossfade(
+            targetState = bar.title,
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .weight(1.0f)
+                .padding(start = 16.dp)
+                .weight(1.0f),
         ) {
-            if (showBackButton) {
-                IconButton(onClick = backAction) {
-                    Icon(Icons.Default.ArrowBack, "Back", tint = Color.White)
-                }
-            }
-            Crossfade(
-                targetState = bar.title,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 16.dp)
-            ) {
-                Text(
-                    it,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = Color.White
-                )
-            }
+            Text(
+                it,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.align(Alignment.CenterVertically),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = Color.White
+            )
         }
         for ((icon, action) in bar.iconButtons) {
             IconButton(onClick = action) {

@@ -22,7 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import personal.secminhr.cavern.main.MainActivity.Companion.articleContentScreen
 import personal.secminhr.cavern.main.MainActivity.Companion.editorScreen
-import personal.secminhr.cavern.main.ui.style.purple500
+import personal.secminhr.cavern.main.ui.style.lightPrimary
 import personal.secminhr.cavern.main.ui.views.Screen
 import personal.secminhr.cavern.main.ui.views.login.LoginScreen
 import personal.secminhr.cavern.main.viewmodel.ArticleViewModel
@@ -101,7 +101,7 @@ object ArticleScreen: Screen() {
             ExtendedFloatingActionButton(
                 text = { Text("New Article", color = Color.White) },
                 onClick = onClick,
-                backgroundColor = purple500,
+                backgroundColor = lightPrimary,
                 icon = { Icon(Icons.Default.Add, "Add", tint = Color.White) })
         }
     }
