@@ -1,6 +1,7 @@
 package personal.secminhr.cavern.main.ui.views
 
 import androidx.compose.runtime.*
+import kotlinx.coroutines.CoroutineScope
 import personal.secminhr.cavern.main.MainActivity.Companion.screenHistory
 
 typealias ComposableFunc =  @Composable () -> Unit
@@ -9,7 +10,7 @@ typealias ClickFunc = () -> Unit
 abstract class Screen {
 
     @Composable
-    abstract fun Screen(showSnackbar: (String) -> Unit)
+    abstract fun Screen(showSnackbar: (String) -> Unit, coroutineScope: CoroutineScope)
 
     var shouldShowBackButton: Boolean by mutableStateOf(false)
         private set
@@ -21,6 +22,13 @@ abstract class Screen {
         barScope.clear()
         shouldShowBackButton = showBackButton
         bar(barScope)
+    }
+
+    var fabButton: @Composable () -> Unit by mutableStateOf({})
+
+    @Composable
+    fun fab(button: @Composable () -> Unit) {
+        fabButton = button
     }
 
     fun navigateTo(screen: Screen) {

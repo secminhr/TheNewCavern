@@ -61,6 +61,8 @@ class ArticleViewModel: CavernViewModel() {
         }
     }
 
+    suspend fun likeArticleSuspend(pid: Int): Boolean = cavernApi.like(pid)
+
     fun likeArticle(pid: Int, result: (Boolean) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             result(cavernApi.like(pid))

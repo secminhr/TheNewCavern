@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Article
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import personal.secminhr.cavern.main.ui.views.Screen
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
@@ -14,7 +15,7 @@ import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 object LoginScreen: Screen() {
 
     @Composable
-    override fun Screen(showSnackbar: (String) -> Unit) {
+    override fun Screen(showSnackbar: (String) -> Unit, coroutineScope: CoroutineScope) {
         appBar {
             iconButton(::backToPreviousScreen) {
                 Icon(Icons.Default.Article, "Article", tint = Color.White)

@@ -1,6 +1,7 @@
 package personal.secminhr.cavern.main.ui.views
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
@@ -16,13 +17,13 @@ fun MainActivityView(screen: Screen) {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
-    Scaffold(scaffoldState = scaffoldState) {
-        Crossfade(screen) {
-            it.Screen(showSnackbar = {
+    Crossfade(screen) { screen ->
+        Scaffold(scaffoldState = scaffoldState, floatingActionButton = screen.fabButton) {
+            screen.Screen(showSnackbar = {
                 scope.launch {
                     scaffoldState.snackbarHostState.showSnackbar(it)
                 }
-            })
+            }, scope)
         }
     }
 }

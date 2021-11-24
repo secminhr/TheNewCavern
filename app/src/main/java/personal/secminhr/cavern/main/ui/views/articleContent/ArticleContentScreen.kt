@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import personal.secminhr.cavern.main.MainActivity.Companion.editorScreen
 import personal.secminhr.cavern.main.ui.views.Screen
@@ -31,7 +32,7 @@ class ArticleContentScreen(val preview: ArticlePreview): Screen() {
 
     @ExperimentalMaterialApi
     @Composable
-    override fun Screen(showSnackbar: (String) -> Unit) {
+    override fun Screen(showSnackbar: (String) -> Unit, coroutineScope: CoroutineScope) {
         val viewModel = viewModel<ArticleViewModel>()
         val userViewModel = viewModel<CurrentUserViewModel>()
 

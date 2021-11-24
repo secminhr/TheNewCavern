@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.CoroutineScope
 import personal.secminhr.cavern.main.ui.views.Screen
 import personal.secminhr.cavern.main.viewmodel.EditorViewModel
 
@@ -24,7 +25,7 @@ class EditorScreen(val editModeSetting: EditModeSetting? = null): Screen() {
     private val inEditArticleMode = (editModeSetting != null)
 
     @Composable
-    override fun Screen(showSnackbar: (String) -> Unit) {
+    override fun Screen(showSnackbar: (String) -> Unit, coroutineScope: CoroutineScope) {
         val editorViewModel: EditorViewModel = viewModel(factory = EditorViewModel.factory(LocalContext.current))
         val savedTitle by editorViewModel.getTitle().collectAsState(null)
         val savedContent by editorViewModel.getContent().collectAsState(null)

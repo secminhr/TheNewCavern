@@ -3,7 +3,7 @@ package personal.secminhr.cavern.main.ui.views.articles
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
@@ -13,13 +13,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
+import kotlinx.coroutines.CoroutineScope
 import personal.secminhr.cavern.main.MainActivity.Companion.articleContentScreen
 import personal.secminhr.cavern.main.MainActivity.Companion.editorScreen
 import personal.secminhr.cavern.main.ui.style.lightPrimary
@@ -35,7 +35,7 @@ object ArticleScreen: Screen() {
     @ExperimentalMaterialApi
     @ExperimentalFoundationApi
     @Composable
-    override fun Screen(showSnackbar: (String) -> Unit) {
+    override fun Screen(showSnackbar: (String) -> Unit, coroutineScope: CoroutineScope) {
         val currentUserViewModel = viewModel<CurrentUserViewModel>()
 
         appBar {
@@ -43,6 +43,17 @@ object ArticleScreen: Screen() {
                 UserIcon(currentUserViewModel.currentUser)
             }
         }
+
+        if (currentUserViewModel.currentUser != null) {
+            fab {
+                ExtendedFloatingActionButton(
+                    text = { Text("New Article", color = Color.White) },
+                    onClick = { navigateTo(editorScreen()) },
+                    backgroundColor = lightPrimary,
+                    icon = { Icon(Icons.Default.Add, "Add", tint = Color.White) })
+            }
+        }
+
 
         val articleListViewModel = viewModel<ArticlesListViewModel>()
         val articleViewModel = viewModel<ArticleViewModel>()
@@ -66,12 +77,6 @@ object ArticleScreen: Screen() {
                 }
             }
         )
-
-        if (currentUserViewModel.currentUser != null) {
-            NewArticleButton {
-                navigateTo(editorScreen())
-            }
-        }
     }
 
     @Composable
@@ -86,23 +91,6 @@ object ArticleScreen: Screen() {
             )
         } else {
             Icon(Icons.Default.AccountCircle, null, tint = Color.White)
-        }
-    }
-
-    @Composable
-    fun NewArticleButton(onClick: () -> Unit) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.End
-        ) {
-            ExtendedFloatingActionButton(
-                text = { Text("New Article", color = Color.White) },
-                onClick = onClick,
-                backgroundColor = lightPrimary,
-                icon = { Icon(Icons.Default.Add, "Add", tint = Color.White) })
         }
     }
 }
