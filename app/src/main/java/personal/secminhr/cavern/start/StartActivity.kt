@@ -7,8 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,9 +16,13 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import personal.secminhr.cavern.commonUI.LoadingIcon
 import personal.secminhr.cavern.main.MainActivity
 import stoneapp.secminhr.cavern.cavernService.CavernCookieStore
-import java.net.*
+import java.net.CookieHandler
+import java.net.CookieManager
+import java.net.CookiePolicy
+import java.net.URL
 import kotlin.concurrent.thread
 
 class StartActivity : AppCompatActivity() {

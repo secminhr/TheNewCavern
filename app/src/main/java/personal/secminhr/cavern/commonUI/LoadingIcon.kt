@@ -1,13 +1,12 @@
-package personal.secminhr.cavern.start
+package personal.secminhr.cavern.commonUI
 
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.lerp
 import androidx.compose.ui.graphics.ClipOp
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
@@ -63,24 +62,23 @@ fun LoadingIcon() {
     }
 }
 
-@Composable
-private fun RectCanvas(modifier: Modifier, onDraw: DrawScope.()->Unit) {
-    Canvas(modifier = modifier.fillMaxSize()) {
-        val horizontalInset = (size.width-size.minDimension) / 2f
-        val verticalInset = (size.height-size.minDimension) / 2f
-        inset(horizontalInset, verticalInset, onDraw)
-    }
-}
+private fun DrawScope.yFull() = Offset(0f, length)
+private fun DrawScope.xFull() = Offset(length, 0f)
+private fun DrawScope.yHalf() = yFull() / 2f
+private fun DrawScope.xHalf() = xFull() / 2f
+private fun DrawScope.center() = xHalf() + yHalf()
+
 
 private fun DrawScope.greenCross() {
-    inset(size.width / 9) {
+    val strokeWidth = 19.7f * scale
+    inset(length / 9) {
         for (deg in 0..90 step 90) {
             rotate(deg.toFloat()) {
                 drawLine(
                     color = logo_green,
-                    start = Offset(x = 0f, y = size.height / 2f),
-                    end = Offset(x = size.width, y = size.height / 2f),
-                    strokeWidth = 19.7f,
+                    start = yHalf(),
+                    end = yHalf() + xFull(),
+                    strokeWidth = strokeWidth,
                     cap = StrokeCap.Round
                 )
             }
@@ -89,17 +87,18 @@ private fun DrawScope.greenCross() {
 }
 
 private fun DrawScope.orangeRect(degree: Float) {
+    val strokeWidth = 19.7f * scale
     rotate(degree) {
-        val rectSizeRatioToWidth = 8.8f
+        //rectSize/length
+        val rectSizeToLengthRatio = 0.12f
+
+        val rectSize = rectSizeToLengthRatio * length
         drawRect(
             color = logo_orange,
-            topLeft = Offset(
-                x = size.width / 2 - size.width / (2 * rectSizeRatioToWidth),
-                y = size.height / 2 - size.width / (2 * rectSizeRatioToWidth)
-            ),
-            size = Size(size.width / rectSizeRatioToWidth, size.width / rectSizeRatioToWidth),
+            topLeft = center() - Offset(rectSize, rectSize)/2f,
+            size = Size(rectSize, rectSize),
             style = Stroke(
-                width = 19.7f,
+                width = strokeWidth,
                 cap = StrokeCap.Round,
                 join = StrokeJoin.Round
             )
@@ -108,20 +107,20 @@ private fun DrawScope.orangeRect(degree: Float) {
 }
 
 private fun DrawScope.blueRect(ratio: Float) {
-    val start = Offset(size.width / 4f, size.height / 2f)
-    val startToMidX = size.width / 2f - size.width / 4f
-    val outerEnd = start + Offset(startToMidX, -startToMidX) * ratio
-    val innerYTransition = 78f
+    val start = center() - xHalf()/2f
+    val end = center() - yHalf()/2f
+    val outerEnd = lerp(start, end, ratio)
+    val innerYTransition = 78f * scale
     val innerStart = outerEnd + Offset(1f, -1f) * innerYTransition / 2f
-    val end = Offset(size.width / 2f, size.height / 4f)
 
+    val strokeWidth = 36f * scale
     for (degree in 0..270 step 90) {
         rotate(degree.toFloat()) {
             clipRect(
                 left = 0f,
                 top = 0f,
-                right = size.width / 2f,
-                bottom = size.height / 2f,
+                right = length / 2f,
+                bottom = length / 2f,
                 clipOp = ClipOp.Intersect
             ) {
                 drawLine(
@@ -129,15 +128,15 @@ private fun DrawScope.blueRect(ratio: Float) {
                     start = start,
                     //using plot slope form to construct the end point, and assume that abs(slope) == 1
                     end = outerEnd,
-                    strokeWidth = 36f,
+                    strokeWidth = strokeWidth,
                     cap = StrokeCap.Round
                 )
-                translate(top = 78f) {
+                translate(top = innerYTransition) {
                     drawLine(
                         color = logo_light_blue,
                         start = innerStart,
                         end = end,
-                        strokeWidth = 36f,
+                        strokeWidth = strokeWidth,
                         cap = StrokeCap.Round
                     )
                 }
@@ -146,8 +145,14 @@ private fun DrawScope.blueRect(ratio: Float) {
     }
 }
 
-@Preview
+@Preview(name = "Original size 435", widthDp = 435, heightDp = 435, showBackground = true)
 @Composable
 fun LoadingIcon_Preview() {
+    LoadingIcon()
+}
+
+@Preview(name = "Bigger size 800", widthDp = 800, heightDp = 800, showBackground = true)
+@Composable
+fun LoadingIcon_Preview800() {
     LoadingIcon()
 }

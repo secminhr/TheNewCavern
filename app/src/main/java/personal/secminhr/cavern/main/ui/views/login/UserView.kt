@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,8 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
+import personal.secminhr.cavern.commonUI.LoadingIcon
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import personal.secminhr.cavern.main.viewmodel.UserInfoViewModel
+import personal.secminhr.cavern.commonUI.LoadingIcon
 import stoneapp.secminhr.cavern.cavernObject.Account
 
 @Composable
@@ -31,7 +32,9 @@ fun UserView(username: String, showSnackbar: (String) -> Unit) {
     }
 
     if (user.value == null) {
-        CircularProgressIndicator()
+        Column(Modifier.height(200.dp)) {
+            LoadingIcon()
+        }
     } else {
         UserView(user = user.value!!)
     }
