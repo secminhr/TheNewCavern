@@ -10,6 +10,7 @@ val lightSecondary = Color(0xffffc107)
 val lightSecondaryDark = Color(0xffc79100)
 val logo_orange = Color(0xfffd9927)
 val logo_green = Color(0xff118714)
+val logo_light_blue = Color(0xff2dfffe)
 val lightSecondaryLight = Color(0xfffff350)
 
 val purple200 = Color(0xFFBB86FC)

@@ -29,6 +29,7 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+    namespace 'stoneapp.secminhr.cavern'
 
 }
 
