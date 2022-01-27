@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import personal.secminhr.cavern.commonUI.LoadingIcon
+import personal.secminhr.cavern.commonUI.AppLogo
 import personal.secminhr.cavern.main.MainActivity
 import stoneapp.secminhr.cavern.cavernService.CavernCookieStore
 import java.net.CookieHandler
@@ -37,7 +37,7 @@ class StartActivity : AppCompatActivity() {
         }
 
         setContent {
-            LoadingIcon()
+            AppLogo()
             if (showUpdateDialog) {
                 RequireUpdateDialog(
                     update = this::startActivity,

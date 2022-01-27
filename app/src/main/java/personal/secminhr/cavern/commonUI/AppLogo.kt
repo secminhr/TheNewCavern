@@ -23,49 +23,102 @@ import personal.secminhr.cavern.main.ui.style.logo_light_blue
 import personal.secminhr.cavern.main.ui.style.logo_orange
 
 @Composable
-fun LoadingIcon() {
-    val rotateTransition = rememberInfiniteTransition()
-    val rotate by rotateTransition.animateFloat(
-        initialValue = 45f,
-        targetValue = 405f,
-        animationSpec = infiniteRepeatable(
-            animation = keyframes {
-                durationMillis = 8*700
-                val transitionDuration = 60
+fun AppLogo(loading: Boolean = false) {
+    if (loading) {
+        val rotateTransition = rememberInfiniteTransition()
+        val rotate by rotateTransition.animateFloat(
+            initialValue = 45f,
+            targetValue = 405f,
+            animationSpec = infiniteRepeatable(
+                animation = keyframes {
+                    durationMillis = 8*700
+                    val transitionDuration = 60
 
-                45f at 0
-                for (i in 1..8) {
-                    val deg = 45f*i
-                    deg at (700*i - transitionDuration) //stay
-                    (deg+45f) at 700*i //change quickly to approximate spring
-                }
-            },
-            repeatMode = RepeatMode.Restart
+                    45f at 0
+                    for (i in 1..8) {
+                        val deg = 45f*i
+                        deg at (700*i - transitionDuration) //stay
+                        (deg+45f) at 700*i //change quickly to approximate spring
+                    }
+                },
+                repeatMode = RepeatMode.Restart
+            )
         )
-    )
 
-    val ratioTransition = rememberInfiniteTransition()
-    val ratio by ratioTransition.animateFloat(
-        initialValue = 0.55f ,
-        targetValue = 0.55f,
-        animationSpec = infiniteRepeatable(
-            animation = keyframes {
-                durationMillis = 5600
-                0.55f at 0
-                1f at 2700 with FastOutSlowInEasing
-                0f at 4200 with FastOutSlowInEasing
-                0.55f at 5600 with LinearOutSlowInEasing
-            },
-            repeatMode = RepeatMode.Restart
+        val ratioTransition = rememberInfiniteTransition()
+        val ratio by ratioTransition.animateFloat(
+            initialValue = 0.55f ,
+            targetValue = 0.55f,
+            animationSpec = infiniteRepeatable(
+                animation = keyframes {
+                    durationMillis = 5600
+                    0.55f at 0
+                    1f at 2700 with FastOutSlowInEasing
+                    0f at 4200 with FastOutSlowInEasing
+                    0.55f at 5600 with LinearOutSlowInEasing
+                },
+                repeatMode = RepeatMode.Restart
+            )
         )
-    )
+        AppLogo(rotate, ratio)
+    } else {
+        AppLogo(45f, 0.55f)
+    }}
 
+@Composable
+private fun AppLogo(rotate: Float, ratio: Float) {
     RectCanvas(modifier = Modifier.zIndex(5f)) {
         orangeRect(rotate)
         blueRect(ratio)
         greenCross()
     }
 }
+
+
+//@Composable
+//fun AppLogo() {
+//    val rotateTransition = rememberInfiniteTransition()
+//    val rotate by rotateTransition.animateFloat(
+//        initialValue = 45f,
+//        targetValue = 405f,
+//        animationSpec = infiniteRepeatable(
+//            animation = keyframes {
+//                durationMillis = 8*700
+//                val transitionDuration = 60
+//
+//                45f at 0
+//                for (i in 1..8) {
+//                    val deg = 45f*i
+//                    deg at (700*i - transitionDuration) //stay
+//                    (deg+45f) at 700*i //change quickly to approximate spring
+//                }
+//            },
+//            repeatMode = RepeatMode.Restart
+//        )
+//    )
+//
+//    val ratioTransition = rememberInfiniteTransition()
+//    val ratio by ratioTransition.animateFloat(
+//        initialValue = 0.55f ,
+//        targetValue = 0.55f,
+//        animationSpec = infiniteRepeatable(
+//            animation = keyframes {
+//                durationMillis = 5600
+//                0.55f at 0
+//                1f at 2700 with FastOutSlowInEasing
+//                0f at 4200 with FastOutSlowInEasing
+//                0.55f at 5600 with LinearOutSlowInEasing
+//            },
+//            repeatMode = RepeatMode.Restart
+//        )
+//    )
+//
+//    RectCanvas(modifier = Modifier.zIndex(5f)) {
+//        orangeRect(rotate)
+//        blueRect(ratio)
+//        greenCross()
+//    }
+//}
 
 private fun DrawScope.yFull() = Offset(0f, length)
 private fun DrawScope.xFull() = Offset(length, 0f)
@@ -150,16 +203,10 @@ private fun DrawScope.blueRect(ratio: Float) {
     }
 }
 
-@Preview(name = "Original size 435", widthDp = 435, heightDp = 435, showBackground = true)
+@Preview(name = "Size 435", widthDp = 435, heightDp = 435, showBackground = true)
 @Composable
 fun LoadingIcon_Preview() {
-    LoadingIcon()
-}
-
-@Preview(name = "dp-sized 435", widthDp = 435, heightDp = 435, showBackground = true)
-@Composable
-fun LoadingIcon_PreviewExprDpSized() {
-    LoadingIcon()
+    AppLogo(loading = true)
 }
 
 @Preview(name = "original img", heightDp = 435, widthDp = 435, showBackground = true)

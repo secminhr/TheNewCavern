@@ -16,10 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
-import personal.secminhr.cavern.commonUI.LoadingIcon
+import personal.secminhr.cavern.commonUI.AppLogo
 import personal.secminhr.cavern.main.viewmodel.CurrentUserViewModel
 import personal.secminhr.cavern.main.viewmodel.UserInfoViewModel
-import personal.secminhr.cavern.commonUI.LoadingIcon
 import stoneapp.secminhr.cavern.cavernObject.Account
 
 @Composable
@@ -33,7 +32,7 @@ fun UserView(username: String, showSnackbar: (String) -> Unit) {
 
     if (user.value == null) {
         Column(Modifier.height(200.dp)) {
-            LoadingIcon()
+            AppLogo(loading = true)
         }
     } else {
         UserView(user = user.value!!)
